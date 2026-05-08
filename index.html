@@ -11,11 +11,13 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
     * { font-family: 'Inter', sans-serif; }
     .gradient-bg { background: linear-gradient(135deg, #fef3e2 0%, #fff4e8 100%); }
-    .book-card { transition: all 0.3s ease; }
+    .book-card { transition: all 0.3s ease; cursor: pointer; }
     .book-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
     .modal { transition: all 0.3s ease; }
     .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #f3f3f3; border-top: 2px solid #d97706; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .btn-primary { background-color: #d97706; }
+    .btn-primary:hover { background-color: #b45309; }
   </style>
 </head>
 <body class="bg-gray-50">
@@ -24,7 +26,7 @@
   <nav class="bg-white shadow-sm border-b sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
-        <div class="flex items-center gap-2 cursor-pointer" onclick="location.reload()">
+        <div class="flex items-center gap-2">
           <i class="fas fa-book-open text-amber-700 text-2xl"></i>
           <span class="font-bold text-xl text-gray-800">Second<span class="text-amber-700">Tale</span></span>
           <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full ml-2">India</span>
@@ -37,7 +39,6 @@
           </div>
           <div id="userMenu" class="hidden flex items-center gap-3">
             <span id="userName" class="text-sm font-medium text-gray-700"></span>
-            <span id="verifiedBadge" class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full hidden">✓ Verified</span>
             <button onclick="logout()" class="text-sm text-red-600 hover:text-red-700">Logout</button>
           </div>
         </div>
@@ -90,9 +91,9 @@
 
     <!-- Books Grid -->
     <div id="booksGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <div class="col-span-full text-center py-12 text-gray-500">
+      <div class="col-span-full text-center py-12">
         <div class="loading-spinner mx-auto mb-2"></div>
-        <p>Loading books from database...</p>
+        <p class="text-gray-500">Loading books from database...</p>
       </div>
     </div>
   </div>
@@ -121,24 +122,9 @@
       <input type="email" id="signupEmail" placeholder="Email" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
       <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" class="w-full px-4 py-2 border rounded-lg mb-2 focus:ring-2 focus:ring-amber-500 outline-none">
       <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-      <p class="text-xs text-gray-500 mb-4">Password must be at least 6 characters. You'll need to verify your email.</p>
+      <p class="text-xs text-gray-500 mb-4">Password must be at least 6 characters</p>
       <button onclick="signup()" id="signupBtn" class="w-full bg-amber-700 text-white py-2 rounded-lg font-semibold mb-3 hover:bg-amber-800 transition">Sign Up</button>
       <button onclick="closeModals()" class="w-full border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition">Cancel</button>
-      <p class="text-center text-sm text-gray-500 mt-3">
-        Already have an account? <a href="#" onclick="showLoginModal(); return false;" class="text-amber-700">Login</a>
-      </p>
-    </div>
-  </div>
-
-  <!-- Email Verification Modal -->
-  <div id="verifyModal" class="modal fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 text-center">
-      <i class="fas fa-envelope text-5xl text-amber-700 mb-4"></i>
-      <h2 class="text-2xl font-bold mb-3">Verify Your Email</h2>
-      <p class="text-gray-600 mb-4">We've sent a verification link to <span id="verifyEmailAddress" class="font-bold"></span></p>
-      <p class="text-sm text-gray-500 mb-4">Please check your inbox and click the verification link to complete signup.</p>
-      <button onclick="closeModals()" class="bg-amber-700 text-white px-6 py-2 rounded-lg">OK, I'll verify</button>
-      <button onclick="resendVerification()" class="block w-full text-center text-amber-700 mt-3 text-sm">Resend email</button>
     </div>
   </div>
 
@@ -147,80 +133,80 @@
     <div class="bg-white rounded-2xl p-8 max-w-lg w-full mx-4 my-8">
       <h2 class="text-2xl font-bold mb-4">List Your Book</h2>
       <div id="sellError" class="hidden bg-red-50 text-red-600 p-2 rounded-lg mb-3 text-sm"></div>
-      <form id="sellForm" onsubmit="return false;">
-        <input type="text" id="bookTitle" placeholder="Book Title *" required class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-        <input type="text" id="bookAuthor" placeholder="Author *" required class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-        <select id="bookGenre" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-          <option value="Fiction">Fiction</option>
-          <option value="Classic">Classic</option>
-          <option value="Mystery">Mystery</option>
-          <option value="Sci-Fi">Sci-Fi</option>
-          <option value="Romance">Romance</option>
-          <option value="Self-Help">Self-Help</option>
-        </select>
-        <input type="number" id="bookPrice" placeholder="Price (₹) *" required class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-        <input type="tel" id="sellerPhone" placeholder="Your WhatsApp Number * (10 digits)" required class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-        <textarea id="bookCondition" rows="3" placeholder="Condition (e.g., Like new, few highlights, slightly used)" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
-        <div class="flex gap-3">
-          <button type="button" onclick="publishBook()" id="publishBtn" class="flex-1 bg-amber-700 text-white py-2 rounded-lg font-semibold hover:bg-amber-800 transition">Publish Listing</button>
-          <button type="button" onclick="closeModals()" class="flex-1 border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition">Cancel</button>
-        </div>
-      </form>
+      <input type="text" id="bookTitle" placeholder="Book Title *" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
+      <input type="text" id="bookAuthor" placeholder="Author *" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
+      <select id="bookGenre" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
+        <option value="Fiction">Fiction</option>
+        <option value="Classic">Classic</option>
+        <option value="Mystery">Mystery</option>
+        <option value="Sci-Fi">Sci-Fi</option>
+        <option value="Romance">Romance</option>
+        <option value="Self-Help">Self-Help</option>
+      </select>
+      <input type="number" id="bookPrice" placeholder="Price (₹) *" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
+      <input type="tel" id="sellerPhone" placeholder="Your WhatsApp Number * (10 digits)" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
+      <textarea id="bookCondition" rows="3" placeholder="Condition (e.g., Like new, few highlights, slightly used)" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
+      <div class="flex gap-3">
+        <button onclick="publishBook()" id="publishBtn" class="flex-1 bg-amber-700 text-white py-2 rounded-lg font-semibold hover:bg-amber-800 transition">Publish Listing</button>
+        <button onclick="closeModals()" class="flex-1 border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+      </div>
     </div>
   </div>
 
   <script>
-    // ============ SUPABASE CONFIGURATION ============
-    // 🔴 REPLACE THESE WITH YOUR ACTUAL SUPABASE CREDENTIALS 🔴
-    const SUPABASE_URL = 'https://vhdziqbrhwmjelextecs.supabase.co/rest/v1/';  // ← PASTE YOUR URL HERE
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZHppcWJyaHdtamVsZXh0ZWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNTMyMTcsImV4cCI6MjA5MzgyOTIxN30.irxpciK3YgA8Kdze8e1adWgCJos99NRCgQxzWmkSEFc';  // ← PASTE YOUR ANON KEY HERE
-    
+    // ============ 🔴 REPLACE WITH YOUR SUPABASE CREDENTIALS 🔴 ============
+    const SUPABASE_URL = 'https://vhdziqbrhwmjelextecs.supabase.co/rest/v1/';  // ← YOUR URL HERE
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZHppcWJyaHdtamVsZXh0ZWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNTMyMTcsImV4cCI6MjA5MzgyOTIxN30.irxpciK3YgA8Kdze8e1adWgCJos99NRCgQxzWmkSEFc';  // ← YOUR ANON KEY HERE
+    // ====================================================================
+
     let supabase;
     let currentUser = null;
-    let currentSession = null;
     let currentGenre = 'all';
     let searchQuery = '';
 
     // Initialize Supabase
     function initSupabase() {
-      if (SUPABASE_URL === 'https://vhdziqbrhwmjelextecs.supabase.co/rest/v1/') {
-        console.error('Please configure your Supabase URL and Anon Key in the code');
-        document.getElementById('booksGrid').innerHTML = `
-          <div class="col-span-full text-center py-12 text-red-500">
-            <i class="fas fa-exclamation-triangle text-3xl mb-2"></i>
-            <p>Supabase not configured!</p>
-            <p class="text-sm mt-2">Please add your SUPABASE_URL and SUPABASE_ANON_KEY in the code.</p>
-          </div>
-        `;
+      if (!SUPABASE_URL || SUPABASE_URL === 'https://vhdziqbrhwmjelextecs.supabase.co/rest/v1/') {
+        console.error('Please configure Supabase');
+        showError('⚠️ Please add your Supabase URL and Anon Key in the code (lines 230-231)');
         return false;
       }
       supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      console.log('✅ Supabase initialized');
       return true;
     }
 
-    // Check current session on load
+    function showError(msg) {
+      document.getElementById('booksGrid').innerHTML = `
+        <div class="col-span-full text-center py-12">
+          <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-3"></i>
+          <p class="text-red-600">${msg}</p>
+          <p class="text-sm text-gray-500 mt-2">Get your keys from: https://supabase.com/dashboard</p>
+        </div>
+      `;
+    }
+
+    // Check session
     async function checkSession() {
       if (!initSupabase()) return;
       
       const { data: { session }, error } = await supabase.auth.getSession();
-      if (session && session.user) {
-        currentSession = session;
+      console.log('Session check:', session ? 'Logged in' : 'Not logged in');
+      
+      if (session) {
         currentUser = session.user;
-        
-        const isVerified = session.user.email_confirmed_at;
-        
         document.getElementById('authButtons').classList.add('hidden');
         document.getElementById('userMenu').classList.remove('hidden');
-        document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.user_metadata?.full_name || session.user.email.split('@')[0]}`;
-        
-        if (isVerified) {
-          document.getElementById('verifiedBadge').classList.remove('hidden');
-        }
-        
-        loadBooks();
+        document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.email.split('@')[0]}`;
+        document.getElementById('sellBtn').style.display = 'inline-flex';
       } else {
-        loadBooks();
+        currentUser = null;
+        document.getElementById('authButtons').classList.remove('hidden');
+        document.getElementById('userMenu').classList.add('hidden');
+        document.getElementById('sellBtn').style.display = 'none';
       }
+      
+      await loadBooks();
     }
 
     // Load books from Supabase
@@ -228,6 +214,8 @@
       if (!supabase) {
         if (!initSupabase()) return;
       }
+      
+      console.log('Loading books from Supabase...');
       
       let query = supabase.from('books').select('*').order('created_at', { ascending: false });
       
@@ -243,24 +231,62 @@
       
       if (error) {
         console.error('Error loading books:', error);
-        document.getElementById('booksGrid').innerHTML = `<div class="col-span-full text-center py-12 text-red-500">Error loading books: ${error.message}</div>`;
+        
+        // If table doesn't exist, show setup instructions
+        if (error.message.includes('relation') && error.message.includes('does not exist')) {
+          document.getElementById('booksGrid').innerHTML = `
+            <div class="col-span-full text-center py-12">
+              <i class="fas fa-database text-4xl text-amber-600 mb-3"></i>
+              <p class="text-gray-800 font-semibold">📚 Database table not found</p>
+              <p class="text-sm text-gray-500 mt-2">Please run this SQL in your Supabase SQL Editor:</p>
+              <pre class="mt-3 p-3 bg-gray-100 rounded-lg text-xs text-left overflow-x-auto max-w-2xl mx-auto">
+CREATE TABLE books (
+  id BIGSERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  author TEXT NOT NULL,
+  genre TEXT NOT NULL,
+  price INT NOT NULL,
+  condition TEXT,
+  seller_name TEXT NOT NULL,
+  seller_id UUID,
+  seller_phone TEXT,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+INSERT INTO books (title, author, genre, price, condition, seller_name, seller_phone) VALUES
+('The Silent Patient', 'Alex Michaelides', 'Mystery', 350, 'Like new', 'Rahul Sharma', '9876543210'),
+('Atomic Habits', 'James Clear', 'Self-Help', 280, 'Good condition', 'Priya Verma', '9876543211'),
+('Pride and Prejudice', 'Jane Austen', 'Classic', 190, 'Well preserved', 'Neha Gupta', '9876543212');
+              </pre>
+            </div>
+          `;
+          return;
+        }
+        
+        document.getElementById('booksGrid').innerHTML = `<div class="col-span-full text-center py-12 text-red-500">Error: ${error.message}</div>`;
         return;
       }
+      
+      console.log(`Loaded ${data?.length || 0} books`);
       
       if (!data || data.length === 0) {
         document.getElementById('booksGrid').innerHTML = `
           <div class="col-span-full text-center py-12">
             <i class="fas fa-book-open text-4xl text-gray-300 mb-3"></i>
             <p class="text-gray-500">No books found.</p>
-            ${currentUser ? '<p class="text-sm text-gray-400 mt-1">Be the first to <button onclick="showSellModal()" class="text-amber-700 underline">list a book</button></p>' : ''}
+            ${currentUser ? '<p class="text-sm text-gray-400 mt-1">Click "Sell Your Book" to add one!</p>' : '<p class="text-sm text-gray-400 mt-1">Login to list your books for sale.</p>'}
           </div>
         `;
-        updateStats(data || []);
+        document.getElementById('bookCount').innerText = '0';
+        document.getElementById('sellerCount').innerText = '0';
         return;
       }
       
       renderBooks(data);
-      updateStats(data);
+      
+      const uniqueSellers = new Set(data.map(b => b.seller_id).filter(id => id));
+      document.getElementById('bookCount').innerText = data.length;
+      document.getElementById('sellerCount').innerText = uniqueSellers.size || data.length;
     }
 
     function renderBooks(books) {
@@ -276,7 +302,7 @@
             <p class="text-sm text-gray-600 mb-2">by ${escapeHtml(book.author)}</p>
             <div class="flex items-center gap-2 mb-2 flex-wrap">
               <span class="inline-block text-xs bg-gray-100 px-2 py-1 rounded">${book.genre}</span>
-              <span class="inline-block text-xs bg-green-100 text-green-700 px-2 py-1 rounded"><i class="fas fa-tag"></i> ₹${book.price}</span>
+              <span class="inline-block text-xs bg-green-100 text-green-700 px-2 py-1 rounded">₹${book.price}</span>
             </div>
             <p class="text-xs text-gray-500 mb-3">📖 ${escapeHtml(book.condition || 'Good condition')}</p>
             <div class="flex items-center justify-between mt-2">
@@ -284,7 +310,7 @@
                 <i class="fas fa-user"></i> ${escapeHtml(book.seller_name)}
               </div>
               ${currentUser ? `
-                <a href="https://wa.me/91${book.seller_phone}?text=Hi! I'm interested in "${book.title}" listed on SecondTale. Price: ₹${book.price}" 
+                <a href="https://wa.me/91${book.seller_phone}?text=Hi! I'm interested in "${book.title}" on SecondTale. Price: ₹${book.price}" 
                    target="_blank"
                    class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-green-700 transition inline-flex items-center gap-1">
                   <i class="fab fa-whatsapp"></i> Contact
@@ -300,58 +326,7 @@
       `).join('');
     }
 
-    function updateStats(books) {
-      if (!books) return;
-      const uniqueSellers = new Set(books.map(b => b.seller_id)).size;
-      document.getElementById('bookCount').innerText = books.length;
-      document.getElementById('sellerCount').innerText = uniqueSellers;
-    }
-
     // ============ AUTH FUNCTIONS ============
-    function showLoginModal() {
-      closeModals();
-      document.getElementById('loginError').classList.add('hidden');
-      document.getElementById('loginEmail').value = '';
-      document.getElementById('loginPassword').value = '';
-      document.getElementById('loginModal').classList.remove('hidden');
-      document.getElementById('loginModal').classList.add('flex');
-    }
-
-    function showSignupModal() {
-      closeModals();
-      document.getElementById('signupError').classList.add('hidden');
-      document.getElementById('signupName').value = '';
-      document.getElementById('signupEmail').value = '';
-      document.getElementById('signupPassword').value = '';
-      document.getElementById('signupConfirmPassword').value = '';
-      document.getElementById('signupModal').classList.remove('hidden');
-      document.getElementById('signupModal').classList.add('flex');
-    }
-
-    function showSellModal() {
-      if (!currentUser) {
-        showLoginModal();
-        alert('Please login or sign up to sell books');
-        return;
-      }
-      if (!currentUser.email_confirmed_at) {
-        alert('Please verify your email before selling books. Check your inbox!');
-        return;
-      }
-      closeModals();
-      document.getElementById('sellError').classList.add('hidden');
-      document.getElementById('sellForm').reset();
-      document.getElementById('sellModal').classList.remove('hidden');
-      document.getElementById('sellModal').classList.add('flex');
-    }
-
-    function closeModals() {
-      document.querySelectorAll('.modal').forEach(modal => {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      });
-    }
-
     async function login() {
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
@@ -376,20 +351,15 @@
       loginBtn.disabled = false;
       
       if (error) {
-        if (error.message.includes('Email not confirmed')) {
-          errorDiv.textContent = 'Please verify your email first. Check your inbox for the verification link.';
-        } else {
-          errorDiv.textContent = error.message;
-        }
+        errorDiv.textContent = error.message;
         errorDiv.classList.remove('hidden');
         return;
       }
       
       if (data.user) {
         currentUser = data.user;
-        currentSession = data.session;
         closeModals();
-        alert('Logged in successfully!');
+        alert('✅ Logged in successfully!');
         document.getElementById('loginEmail').value = '';
         document.getElementById('loginPassword').value = '';
         await checkSession();
@@ -404,14 +374,8 @@
       const errorDiv = document.getElementById('signupError');
       const signupBtn = document.getElementById('signupBtn');
       
-      if (!name || !email || !password || !confirmPassword) {
+      if (!name || !email || !password) {
         errorDiv.textContent = 'Please fill all fields';
-        errorDiv.classList.remove('hidden');
-        return;
-      }
-      
-      if (name.length < 2) {
-        errorDiv.textContent = 'Name must be at least 2 characters';
         errorDiv.classList.remove('hidden');
         return;
       }
@@ -435,9 +399,7 @@
         email: email,
         password: password,
         options: {
-          data: {
-            full_name: name,
-          }
+          data: { full_name: name }
         }
       });
       
@@ -452,10 +414,7 @@
       
       if (data.user) {
         closeModals();
-        document.getElementById('verifyEmailAddress').innerText = email;
-        document.getElementById('verifyModal').classList.remove('hidden');
-        document.getElementById('verifyModal').classList.add('flex');
-        
+        alert(`✅ Account created! Please check ${email} for verification link.`);
         document.getElementById('signupName').value = '';
         document.getElementById('signupEmail').value = '';
         document.getElementById('signupPassword').value = '';
@@ -463,28 +422,11 @@
       }
     }
 
-    async function resendVerification() {
-      const email = document.getElementById('verifyEmailAddress').innerText;
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
-        email: email
-      });
-      
-      if (error) {
-        alert('Error: ' + error.message);
-      } else {
-        alert('Verification email resent! Please check your inbox.');
-      }
-    }
-
     async function logout() {
       await supabase.auth.signOut();
       currentUser = null;
-      currentSession = null;
-      document.getElementById('authButtons').classList.remove('hidden');
-      document.getElementById('userMenu').classList.add('hidden');
-      alert('Logged out successfully');
-      await loadBooks();
+      await checkSession();
+      alert('Logged out');
     }
 
     // ============ BOOK FUNCTIONS ============
@@ -504,19 +446,7 @@
       const publishBtn = document.getElementById('publishBtn');
       
       if (!title || !author || !price || !sellerPhone) {
-        errorDiv.textContent = 'Please fill all required fields (*)';
-        errorDiv.classList.remove('hidden');
-        return;
-      }
-      
-      if (title.length < 2) {
-        errorDiv.textContent = 'Book title must be at least 2 characters';
-        errorDiv.classList.remove('hidden');
-        return;
-      }
-      
-      if (price <= 0 || isNaN(price)) {
-        errorDiv.textContent = 'Please enter a valid price';
+        errorDiv.textContent = 'Please fill all required fields';
         errorDiv.classList.remove('hidden');
         return;
       }
@@ -530,7 +460,7 @@
       publishBtn.innerHTML = '<div class="loading-spinner"></div> Publishing...';
       publishBtn.disabled = true;
       
-      const { data, error } = await supabase.from('books').insert([{
+      const { error } = await supabase.from('books').insert([{
         title: title,
         author: author,
         genre: genre,
@@ -552,9 +482,38 @@
       }
       
       closeModals();
-      document.getElementById('sellForm').reset();
-      alert('Your book has been listed successfully! Buyers can now contact you via WhatsApp.');
+      document.getElementById('sellForm')?.reset();
+      alert('✅ Book listed successfully!');
       await loadBooks();
+    }
+
+    function showLoginModal() {
+      closeModals();
+      document.getElementById('loginModal').classList.remove('hidden');
+      document.getElementById('loginModal').classList.add('flex');
+    }
+
+    function showSignupModal() {
+      closeModals();
+      document.getElementById('signupModal').classList.remove('hidden');
+      document.getElementById('signupModal').classList.add('flex');
+    }
+
+    function showSellModal() {
+      if (!currentUser) {
+        showLoginModal();
+        return;
+      }
+      closeModals();
+      document.getElementById('sellModal').classList.remove('hidden');
+      document.getElementById('sellModal').classList.add('flex');
+    }
+
+    function closeModals() {
+      document.querySelectorAll('.modal').forEach(modal => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      });
     }
 
     function escapeHtml(str) {
@@ -567,7 +526,7 @@
       });
     }
 
-    // ============ EVENT LISTENERS ============
+    // Event Listeners
     document.querySelectorAll('.genre-filter').forEach(btn => {
       btn.addEventListener('click', function() {
         document.querySelectorAll('.genre-filter').forEach(b => {
@@ -586,13 +545,11 @@
       loadBooks();
     });
 
-    window.onclick = function(event) {
-      if (event.target.classList && event.target.classList.contains('modal')) {
-        closeModals();
-      }
+    window.onclick = (event) => {
+      if (event.target.classList?.contains('modal')) closeModals();
     };
 
-    // Initialize
+    // Start
     checkSession();
   </script>
 </body>
