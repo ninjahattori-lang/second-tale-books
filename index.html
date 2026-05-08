@@ -4,138 +4,503 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Second Tale | India's Second-Hand Book Marketplace</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Using simple CSS instead of Tailwind CDN for production -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    * { font-family: 'Inter', sans-serif; }
-    .gradient-bg { background: linear-gradient(135deg, #fef3e2 0%, #fff4e8 100%); }
-    .book-card { transition: all 0.3s ease; cursor: pointer; }
-    .book-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
-    .modal { transition: all 0.3s ease; }
-    .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #f3f3f3; border-top: 2px solid #d97706; border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .btn-primary { background-color: #d97706; }
-    .btn-primary:hover { background-color: #b45309; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #f9fafb;
+      color: #1f2937;
+    }
+    
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    /* Navigation */
+    .navbar {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 1rem 0;
+    }
+    
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+    
+    .logo-icon {
+      font-size: 1.75rem;
+      color: #d97706;
+    }
+    
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+    
+    .logo-text span {
+      color: #d97706;
+    }
+    
+    .badge {
+      font-size: 0.75rem;
+      background: #dcfce7;
+      color: #166534;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      margin-left: 0.5rem;
+    }
+    
+    .btn-outline {
+      padding: 0.5rem 1rem;
+      border: 1px solid #d97706;
+      color: #d97706;
+      background: transparent;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .btn-outline:hover {
+      background: #fffbeb;
+    }
+    
+    .btn-primary {
+      padding: 0.5rem 1rem;
+      background: #d97706;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .btn-primary:hover {
+      background: #b45309;
+    }
+    
+    .btn-green {
+      background: #16a34a;
+      color: white;
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-size: 0.875rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .btn-green:hover {
+      background: #15803d;
+    }
+    
+    .btn-gray {
+      background: #4b5563;
+      color: white;
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.5rem;
+      border: none;
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    .flex {
+      display: flex;
+    }
+    
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
+    
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #fef3e2 0%, #fff4e8 100%);
+      border-radius: 1rem;
+      padding: 2rem;
+      text-align: center;
+      margin: 1.5rem 0;
+    }
+    
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .hero p {
+      color: #6b7280;
+      margin-bottom: 1rem;
+    }
+    
+    /* Stats */
+    .stats {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    /* Filters */
+    .filters {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .search-box {
+      flex: 1;
+      position: relative;
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: 0.5rem 0.5rem 0.5rem 2rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      outline: none;
+    }
+    
+    .search-box i {
+      position: absolute;
+      left: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+    }
+    
+    .genre-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .genre-btn {
+      padding: 0.375rem 1rem;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      background: #e5e7eb;
+      color: #4b5563;
+    }
+    
+    .genre-btn.active {
+      background: #d97706;
+      color: white;
+    }
+    
+    /* Book Grid */
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .book-card {
+      background: white;
+      border-radius: 0.75rem;
+      border: 1px solid #e5e7eb;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+    
+    .book-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    }
+    
+    .book-cover {
+      height: 160px;
+      background: linear-gradient(135deg, #fef3e2, #fff4e8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: #d97706;
+    }
+    
+    .book-info {
+      padding: 1rem;
+    }
+    
+    .book-title {
+      font-weight: 700;
+      font-size: 1.125rem;
+      margin-bottom: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .book-author {
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-bottom: 0.5rem;
+    }
+    
+    .book-genre {
+      display: inline-block;
+      font-size: 0.75rem;
+      background: #f3f4f6;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      margin-right: 0.5rem;
+    }
+    
+    .book-price {
+      display: inline-block;
+      font-size: 0.75rem;
+      background: #dcfce7;
+      color: #166534;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+    }
+    
+    .book-condition {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin: 0.5rem 0;
+    }
+    
+    .seller-name {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-top: 0.5rem;
+    }
+    
+    /* Modals */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .modal.show {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .modal-content h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    
+    .modal-content input,
+    .modal-content select,
+    .modal-content textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .error-msg {
+      background: #fee2e2;
+      color: #dc2626;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      display: none;
+    }
+    
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #d97706;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .books-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+      .genre-buttons { justify-content: center; }
+      .flex-between { flex-direction: column; gap: 1rem; }
+    }
+    
+    button {
+      cursor: pointer;
+    }
+    
+    .gap-3 { gap: 0.75rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .text-center { text-align: center; }
+    .text-sm { font-size: 0.875rem; }
+    .text-gray-500 { color: #6b7280; }
   </style>
 </head>
-<body class="bg-gray-50">
+<body>
 
   <!-- Navigation -->
-  <nav class="bg-white shadow-sm border-b sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <div class="flex items-center gap-2">
-          <i class="fas fa-book-open text-amber-700 text-2xl"></i>
-          <span class="font-bold text-xl text-gray-800">Second<span class="text-amber-700">Tale</span></span>
-          <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full ml-2">India</span>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="logo" onclick="location.reload()">
+        <i class="fas fa-book-open logo-icon"></i>
+        <span class="logo-text">Second<span>Tale</span></span>
+        <span class="badge">India</span>
+      </div>
+      
+      <div class="flex gap-3">
+        <div id="authButtons" class="flex gap-3">
+          <button class="btn-outline" onclick="window.showLoginModal()">Login</button>
+          <button class="btn-primary" onclick="window.showSignupModal()">Sign Up</button>
         </div>
-        
-        <div class="flex items-center gap-4">
-          <div id="authButtons" class="flex gap-3">
-            <button onclick="showLoginModal()" class="px-4 py-2 text-amber-700 border border-amber-700 rounded-lg hover:bg-amber-50 transition font-medium">Login</button>
-            <button onclick="showSignupModal()" class="px-4 py-2 bg-amber-700 text-white rounded-lg hover:bg-amber-800 transition font-medium">Sign Up</button>
-          </div>
-          <div id="userMenu" class="hidden flex items-center gap-3">
-            <span id="userName" class="text-sm font-medium text-gray-700"></span>
-            <button onclick="logout()" class="text-sm text-red-600 hover:text-red-700">Logout</button>
-          </div>
+        <div id="userMenu" class="hidden flex gap-3">
+          <span id="userName" class="text-sm" style="display: flex; align-items: center;"></span>
+          <button class="btn-outline" onclick="window.logout()" style="border-color: #dc2626; color: #dc2626;">Logout</button>
         </div>
       </div>
     </div>
   </nav>
 
-  <!-- Main Content -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    
-    <!-- Hero Section -->
-    <div class="gradient-bg rounded-2xl p-8 mb-8 text-center">
-      <h1 class="text-4xl font-bold text-gray-800 mb-3">Buy & Sell Used Books</h1>
-      <p class="text-gray-600 mb-4">Connect with book lovers across India. Direct WhatsApp contact with sellers.</p>
-      <button onclick="showSellModal()" id="sellBtn" class="bg-amber-700 text-white px-6 py-3 rounded-full font-semibold hover:bg-amber-800 transition inline-flex items-center gap-2 shadow-md">
+  <div class="container">
+    <!-- Hero -->
+    <div class="hero">
+      <h1>Buy & Sell Used Books</h1>
+      <p>Connect with book lovers across India. Direct WhatsApp contact with sellers.</p>
+      <button class="btn-primary" id="sellBtn" onclick="window.showSellModal()" style="display: none; padding: 0.75rem 1.5rem;">
         <i class="fas fa-plus-circle"></i> Sell Your Book
       </button>
     </div>
 
-    <!-- Stats Bar -->
-    <div class="bg-white rounded-xl p-4 shadow-sm mb-6 flex justify-between items-center">
-      <div class="text-sm text-gray-600">
-        <i class="fas fa-book text-amber-600"></i> <span id="bookCount">0</span> books available
-      </div>
-      <div class="text-sm text-gray-600">
-        <i class="fas fa-users text-amber-600"></i> <span id="sellerCount">0</span> active sellers
-      </div>
+    <!-- Stats -->
+    <div class="stats">
+      <div><i class="fas fa-book"></i> <span id="bookCount">0</span> books available</div>
+      <div><i class="fas fa-users"></i> <span id="sellerCount">0</span> active sellers</div>
     </div>
 
     <!-- Filters -->
-    <div class="bg-white rounded-xl p-4 shadow-sm mb-6">
-      <div class="flex flex-wrap gap-4 items-center justify-between">
-        <div class="flex-1 min-w-[200px]">
-          <div class="relative">
-            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            <input type="text" id="searchInput" placeholder="Search by title, author, or seller..." class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
-          </div>
+    <div class="filters">
+      <div class="flex-between" style="gap: 1rem; flex-wrap: wrap;">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchInput" placeholder="Search by title, author, or seller...">
         </div>
-        <div class="flex gap-2 overflow-x-auto pb-2">
-          <button class="genre-filter px-4 py-2 rounded-full bg-amber-700 text-white transition" data-genre="all">All</button>
-          <button class="genre-filter px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition" data-genre="Fiction">Fiction</button>
-          <button class="genre-filter px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition" data-genre="Classic">Classic</button>
-          <button class="genre-filter px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition" data-genre="Mystery">Mystery</button>
-          <button class="genre-filter px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition" data-genre="Sci-Fi">Sci-Fi</button>
-          <button class="genre-filter px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition" data-genre="Romance">Romance</button>
-          <button class="genre-filter px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition" data-genre="Self-Help">Self-Help</button>
+        <div class="genre-buttons" id="genreContainer">
+          <button class="genre-btn active" data-genre="all">All</button>
+          <button class="genre-btn" data-genre="Fiction">Fiction</button>
+          <button class="genre-btn" data-genre="Classic">Classic</button>
+          <button class="genre-btn" data-genre="Mystery">Mystery</button>
+          <button class="genre-btn" data-genre="Sci-Fi">Sci-Fi</button>
+          <button class="genre-btn" data-genre="Romance">Romance</button>
+          <button class="genre-btn" data-genre="Self-Help">Self-Help</button>
         </div>
       </div>
     </div>
 
     <!-- Books Grid -->
-    <div id="booksGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <div class="col-span-full text-center py-12">
-        <div class="loading-spinner mx-auto mb-2"></div>
-        <p class="text-gray-500">Loading books from database...</p>
+    <div id="booksGrid" class="books-grid">
+      <div class="text-center" style="grid-column: 1/-1; padding: 3rem;">
+        <div class="loading-spinner"></div>
+        <p class="text-gray-500" style="margin-top: 0.5rem;">Loading books from database...</p>
       </div>
     </div>
   </div>
 
   <!-- Login Modal -->
-  <div id="loginModal" class="modal fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
-      <h2 class="text-2xl font-bold mb-4">Welcome Back</h2>
-      <div id="loginError" class="hidden bg-red-50 text-red-600 p-2 rounded-lg mb-3 text-sm"></div>
-      <input type="email" id="loginEmail" placeholder="Email address" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-      <input type="password" id="loginPassword" placeholder="Password" class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring-2 focus:ring-amber-500 outline-none">
-      <button onclick="login()" id="loginBtn" class="w-full bg-amber-700 text-white py-2 rounded-lg font-semibold mb-3 hover:bg-amber-800 transition">Login</button>
-      <button onclick="closeModals()" class="w-full border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition">Cancel</button>
-      <p class="text-center text-sm text-gray-500 mt-3">
-        Don't have an account? <a href="#" onclick="showSignupModal(); return false;" class="text-amber-700">Sign up</a>
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <h2>Welcome Back</h2>
+      <div id="loginError" class="error-msg"></div>
+      <input type="email" id="loginEmail" placeholder="Email address">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <button class="btn-primary" id="loginBtn" style="width: 100%; margin-bottom: 0.75rem;">Login</button>
+      <button class="btn-outline" onclick="window.closeModals()" style="width: 100%;">Cancel</button>
+      <p class="text-center text-sm" style="margin-top: 0.75rem;">
+        Don't have an account? <a href="#" onclick="window.showSignupModal(); return false;" style="color: #d97706;">Sign up</a>
       </p>
     </div>
   </div>
 
   <!-- Signup Modal -->
-  <div id="signupModal" class="modal fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
-      <h2 class="text-2xl font-bold mb-4">Create Account</h2>
-      <div id="signupError" class="hidden bg-red-50 text-red-600 p-2 rounded-lg mb-3 text-sm"></div>
-      <input type="text" id="signupName" placeholder="Full Name" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-      <input type="email" id="signupEmail" placeholder="Email" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-      <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" class="w-full px-4 py-2 border rounded-lg mb-2 focus:ring-2 focus:ring-amber-500 outline-none">
-      <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-      <p class="text-xs text-gray-500 mb-4">Password must be at least 6 characters</p>
-      <button onclick="signup()" id="signupBtn" class="w-full bg-amber-700 text-white py-2 rounded-lg font-semibold mb-3 hover:bg-amber-800 transition">Sign Up</button>
-      <button onclick="closeModals()" class="w-full border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+  <div id="signupModal" class="modal">
+    <div class="modal-content">
+      <h2>Create Account</h2>
+      <div id="signupError" class="error-msg"></div>
+      <input type="text" id="signupName" placeholder="Full Name">
+      <input type="email" id="signupEmail" placeholder="Email">
+      <input type="password" id="signupPassword" placeholder="Password (min 6 characters)">
+      <input type="password" id="signupConfirmPassword" placeholder="Confirm Password">
+      <p class="text-sm text-gray-500" style="margin-bottom: 0.75rem;">Password must be at least 6 characters</p>
+      <button class="btn-primary" id="signupBtn" style="width: 100%; margin-bottom: 0.75rem;">Sign Up</button>
+      <button class="btn-outline" onclick="window.closeModals()" style="width: 100%;">Cancel</button>
     </div>
   </div>
 
-  <!-- Sell Book Modal -->
-  <div id="sellModal" class="modal fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 overflow-y-auto">
-    <div class="bg-white rounded-2xl p-8 max-w-lg w-full mx-4 my-8">
-      <h2 class="text-2xl font-bold mb-4">List Your Book</h2>
-      <div id="sellError" class="hidden bg-red-50 text-red-600 p-2 rounded-lg mb-3 text-sm"></div>
-      <input type="text" id="bookTitle" placeholder="Book Title *" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-      <input type="text" id="bookAuthor" placeholder="Author *" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-      <select id="bookGenre" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
+  <!-- Sell Modal -->
+  <div id="sellModal" class="modal">
+    <div class="modal-content">
+      <h2>List Your Book</h2>
+      <div id="sellError" class="error-msg"></div>
+      <input type="text" id="bookTitle" placeholder="Book Title *">
+      <input type="text" id="bookAuthor" placeholder="Author *">
+      <select id="bookGenre">
         <option value="Fiction">Fiction</option>
         <option value="Classic">Classic</option>
         <option value="Mystery">Mystery</option>
@@ -143,23 +508,24 @@
         <option value="Romance">Romance</option>
         <option value="Self-Help">Self-Help</option>
       </select>
-      <input type="number" id="bookPrice" placeholder="Price (₹) *" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-      <input type="tel" id="sellerPhone" placeholder="Your WhatsApp Number * (10 digits)" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-      <textarea id="bookCondition" rows="3" placeholder="Condition (e.g., Like new, few highlights, slightly used)" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
+      <input type="number" id="bookPrice" placeholder="Price (₹) *">
+      <input type="tel" id="sellerPhone" placeholder="Your WhatsApp Number * (10 digits)">
+      <textarea id="bookCondition" rows="3" placeholder="Condition (e.g., Like new, few highlights)"></textarea>
       <div class="flex gap-3">
-        <button onclick="publishBook()" id="publishBtn" class="flex-1 bg-amber-700 text-white py-2 rounded-lg font-semibold hover:bg-amber-800 transition">Publish Listing</button>
-        <button onclick="closeModals()" class="flex-1 border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+        <button class="btn-primary" id="publishBtn" style="flex: 1;">Publish Listing</button>
+        <button class="btn-outline" onclick="window.closeModals()" style="flex: 1;">Cancel</button>
       </div>
     </div>
   </div>
 
   <script>
-    // ============ 🔴 REPLACE WITH YOUR SUPABASE CREDENTIALS 🔴 ============
-    const SUPABASE_URL = 'https://vhdziqbrhwmjelextecs.supabase.co/rest/v1/';  // ← YOUR URL HERE
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZHppcWJyaHdtamVsZXh0ZWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNTMyMTcsImV4cCI6MjA5MzgyOTIxN30.irxpciK3YgA8Kdze8e1adWgCJos99NRCgQxzWmkSEFc';  // ← YOUR ANON KEY HERE
-    // ====================================================================
+    // ============ SUPABASE CONFIGURATION ============
+    // 🔴 REPLACE WITH YOUR ACTUAL SUPABASE CREDENTIALS 🔴
+    const SUPABASE_URL = 'https://vhdziqbrhwmjelextecs.supabase.co/rest/v1/';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZHppcWJyaHdtamVsZXh0ZWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNTMyMTcsImV4cCI6MjA5MzgyOTIxN30.irxpciK3YgA8Kdze8e1adWgCJos99NRCgQxzWmkSEFc';
+    // ================================================
 
-    let supabase;
+    let supabaseClient = null;
     let currentUser = null;
     let currentGenre = 'all';
     let searchQuery = '';
@@ -168,30 +534,23 @@
     function initSupabase() {
       if (!SUPABASE_URL || SUPABASE_URL === 'https://vhdziqbrhwmjelextecs.supabase.co/rest/v1/') {
         console.error('Please configure Supabase');
-        showError('⚠️ Please add your Supabase URL and Anon Key in the code (lines 230-231)');
+        document.getElementById('booksGrid').innerHTML = `
+          <div class="text-center" style="grid-column: 1/-1; padding: 3rem;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #dc2626;"></i>
+            <p style="color: #dc2626; margin-top: 0.5rem;">⚠️ Please add your Supabase URL and Anon Key in the code</p>
+          </div>
+        `;
         return false;
       }
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      console.log('✅ Supabase initialized');
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       return true;
-    }
-
-    function showError(msg) {
-      document.getElementById('booksGrid').innerHTML = `
-        <div class="col-span-full text-center py-12">
-          <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-3"></i>
-          <p class="text-red-600">${msg}</p>
-          <p class="text-sm text-gray-500 mt-2">Get your keys from: https://supabase.com/dashboard</p>
-        </div>
-      `;
     }
 
     // Check session
     async function checkSession() {
       if (!initSupabase()) return;
       
-      const { data: { session }, error } = await supabase.auth.getSession();
-      console.log('Session check:', session ? 'Logged in' : 'Not logged in');
+      const { data: { session } } = await supabaseClient.auth.getSession();
       
       if (session) {
         currentUser = session.user;
@@ -209,15 +568,11 @@
       await loadBooks();
     }
 
-    // Load books from Supabase
+    // Load books
     async function loadBooks() {
-      if (!supabase) {
-        if (!initSupabase()) return;
-      }
+      if (!supabaseClient) return;
       
-      console.log('Loading books from Supabase...');
-      
-      let query = supabase.from('books').select('*').order('created_at', { ascending: false });
+      let query = supabaseClient.from('books').select('*').order('created_at', { ascending: false });
       
       if (currentGenre !== 'all') {
         query = query.eq('genre', currentGenre);
@@ -230,51 +585,21 @@
       const { data, error } = await query;
       
       if (error) {
-        console.error('Error loading books:', error);
-        
-        // If table doesn't exist, show setup instructions
-        if (error.message.includes('relation') && error.message.includes('does not exist')) {
-          document.getElementById('booksGrid').innerHTML = `
-            <div class="col-span-full text-center py-12">
-              <i class="fas fa-database text-4xl text-amber-600 mb-3"></i>
-              <p class="text-gray-800 font-semibold">📚 Database table not found</p>
-              <p class="text-sm text-gray-500 mt-2">Please run this SQL in your Supabase SQL Editor:</p>
-              <pre class="mt-3 p-3 bg-gray-100 rounded-lg text-xs text-left overflow-x-auto max-w-2xl mx-auto">
-CREATE TABLE books (
-  id BIGSERIAL PRIMARY KEY,
-  title TEXT NOT NULL,
-  author TEXT NOT NULL,
-  genre TEXT NOT NULL,
-  price INT NOT NULL,
-  condition TEXT,
-  seller_name TEXT NOT NULL,
-  seller_id UUID,
-  seller_phone TEXT,
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
-INSERT INTO books (title, author, genre, price, condition, seller_name, seller_phone) VALUES
-('The Silent Patient', 'Alex Michaelides', 'Mystery', 350, 'Like new', 'Rahul Sharma', '9876543210'),
-('Atomic Habits', 'James Clear', 'Self-Help', 280, 'Good condition', 'Priya Verma', '9876543211'),
-('Pride and Prejudice', 'Jane Austen', 'Classic', 190, 'Well preserved', 'Neha Gupta', '9876543212');
-              </pre>
-            </div>
-          `;
-          return;
-        }
-        
-        document.getElementById('booksGrid').innerHTML = `<div class="col-span-full text-center py-12 text-red-500">Error: ${error.message}</div>`;
+        console.error('Error:', error);
+        document.getElementById('booksGrid').innerHTML = `
+          <div class="text-center" style="grid-column: 1/-1; padding: 3rem;">
+            <p style="color: #dc2626;">Error loading books: ${error.message}</p>
+          </div>
+        `;
         return;
       }
       
-      console.log(`Loaded ${data?.length || 0} books`);
-      
       if (!data || data.length === 0) {
         document.getElementById('booksGrid').innerHTML = `
-          <div class="col-span-full text-center py-12">
-            <i class="fas fa-book-open text-4xl text-gray-300 mb-3"></i>
-            <p class="text-gray-500">No books found.</p>
-            ${currentUser ? '<p class="text-sm text-gray-400 mt-1">Click "Sell Your Book" to add one!</p>' : '<p class="text-sm text-gray-400 mt-1">Login to list your books for sale.</p>'}
+          <div class="text-center" style="grid-column: 1/-1; padding: 3rem;">
+            <i class="fas fa-book-open" style="font-size: 2rem; color: #d1d5db;"></i>
+            <p class="text-gray-500" style="margin-top: 0.5rem;">No books found.</p>
+            ${currentUser ? '<p class="text-sm text-gray-400">Click "Sell Your Book" to add one!</p>' : '<p class="text-sm text-gray-400">Login to list your books for sale.</p>'}
           </div>
         `;
         document.getElementById('bookCount').innerText = '0';
@@ -283,7 +608,6 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
       }
       
       renderBooks(data);
-      
       const uniqueSellers = new Set(data.map(b => b.seller_id).filter(id => id));
       document.getElementById('bookCount').innerText = data.length;
       document.getElementById('sellerCount').innerText = uniqueSellers.size || data.length;
@@ -293,30 +617,29 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
       const grid = document.getElementById('booksGrid');
       
       grid.innerHTML = books.map(book => `
-        <div class="book-card bg-white rounded-xl shadow-sm border overflow-hidden">
-          <div class="h-36 bg-gradient-to-r from-amber-50 to-orange-50 flex items-center justify-center">
-            <i class="fas fa-book-open text-4xl text-amber-600"></i>
+        <div class="book-card">
+          <div class="book-cover">
+            <i class="fas fa-book-open"></i>
           </div>
-          <div class="p-4">
-            <h3 class="font-bold text-lg mb-1 truncate">${escapeHtml(book.title)}</h3>
-            <p class="text-sm text-gray-600 mb-2">by ${escapeHtml(book.author)}</p>
-            <div class="flex items-center gap-2 mb-2 flex-wrap">
-              <span class="inline-block text-xs bg-gray-100 px-2 py-1 rounded">${book.genre}</span>
-              <span class="inline-block text-xs bg-green-100 text-green-700 px-2 py-1 rounded">₹${book.price}</span>
+          <div class="book-info">
+            <h3 class="book-title">${escapeHtml(book.title)}</h3>
+            <p class="book-author">by ${escapeHtml(book.author)}</p>
+            <div>
+              <span class="book-genre">${book.genre}</span>
+              <span class="book-price">₹${book.price}</span>
             </div>
-            <p class="text-xs text-gray-500 mb-3">📖 ${escapeHtml(book.condition || 'Good condition')}</p>
-            <div class="flex items-center justify-between mt-2">
-              <div class="text-xs text-gray-400">
-                <i class="fas fa-user"></i> ${escapeHtml(book.seller_name)}
-              </div>
+            <p class="book-condition">📖 ${escapeHtml(book.condition || 'Good condition')}</p>
+            <div class="seller-name">
+              <i class="fas fa-user"></i> ${escapeHtml(book.seller_name)}
+            </div>
+            <div style="margin-top: 0.75rem;">
               ${currentUser ? `
                 <a href="https://wa.me/91${book.seller_phone}?text=Hi! I'm interested in "${book.title}" on SecondTale. Price: ₹${book.price}" 
-                   target="_blank"
-                   class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-green-700 transition inline-flex items-center gap-1">
-                  <i class="fab fa-whatsapp"></i> Contact
+                   target="_blank" class="btn-green">
+                  <i class="fab fa-whatsapp"></i> Contact Seller
                 </a>
               ` : `
-                <button onclick="showLoginModal()" class="bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-gray-700 transition">
+                <button class="btn-gray" onclick="window.showLoginModal()">
                   Login to Contact
                 </button>
               `}
@@ -326,33 +649,32 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
       `).join('');
     }
 
-    // ============ AUTH FUNCTIONS ============
+    // Auth functions
     async function login() {
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
       const errorDiv = document.getElementById('loginError');
       const loginBtn = document.getElementById('loginBtn');
       
+      errorDiv.style.display = 'none';
+      
       if (!email || !password) {
         errorDiv.textContent = 'Please enter both email and password';
-        errorDiv.classList.remove('hidden');
+        errorDiv.style.display = 'block';
         return;
       }
       
       loginBtn.innerHTML = '<div class="loading-spinner"></div> Logging in...';
       loginBtn.disabled = true;
       
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password
-      });
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
       
       loginBtn.innerHTML = 'Login';
       loginBtn.disabled = false;
       
       if (error) {
         errorDiv.textContent = error.message;
-        errorDiv.classList.remove('hidden');
+        errorDiv.style.display = 'block';
         return;
       }
       
@@ -374,33 +696,33 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
       const errorDiv = document.getElementById('signupError');
       const signupBtn = document.getElementById('signupBtn');
       
+      errorDiv.style.display = 'none';
+      
       if (!name || !email || !password) {
         errorDiv.textContent = 'Please fill all fields';
-        errorDiv.classList.remove('hidden');
+        errorDiv.style.display = 'block';
         return;
       }
       
       if (password.length < 6) {
         errorDiv.textContent = 'Password must be at least 6 characters';
-        errorDiv.classList.remove('hidden');
+        errorDiv.style.display = 'block';
         return;
       }
       
       if (password !== confirmPassword) {
         errorDiv.textContent = 'Passwords do not match';
-        errorDiv.classList.remove('hidden');
+        errorDiv.style.display = 'block';
         return;
       }
       
       signupBtn.innerHTML = '<div class="loading-spinner"></div> Creating account...';
       signupBtn.disabled = true;
       
-      const { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-        options: {
-          data: { full_name: name }
-        }
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: name } }
       });
       
       signupBtn.innerHTML = 'Sign Up';
@@ -408,7 +730,7 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
       
       if (error) {
         errorDiv.textContent = error.message;
-        errorDiv.classList.remove('hidden');
+        errorDiv.style.display = 'block';
         return;
       }
       
@@ -423,13 +745,13 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
     }
 
     async function logout() {
-      await supabase.auth.signOut();
+      await supabaseClient.auth.signOut();
       currentUser = null;
       await checkSession();
       alert('Logged out');
     }
 
-    // ============ BOOK FUNCTIONS ============
+    // Book functions
     async function publishBook() {
       if (!currentUser) {
         showLoginModal();
@@ -445,26 +767,25 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
       const errorDiv = document.getElementById('sellError');
       const publishBtn = document.getElementById('publishBtn');
       
+      errorDiv.style.display = 'none';
+      
       if (!title || !author || !price || !sellerPhone) {
         errorDiv.textContent = 'Please fill all required fields';
-        errorDiv.classList.remove('hidden');
+        errorDiv.style.display = 'block';
         return;
       }
       
       if (!/^[0-9]{10}$/.test(sellerPhone)) {
         errorDiv.textContent = 'Please enter a valid 10-digit phone number';
-        errorDiv.classList.remove('hidden');
+        errorDiv.style.display = 'block';
         return;
       }
       
       publishBtn.innerHTML = '<div class="loading-spinner"></div> Publishing...';
       publishBtn.disabled = true;
       
-      const { error } = await supabase.from('books').insert([{
-        title: title,
-        author: author,
-        genre: genre,
-        price: price,
+      const { error } = await supabaseClient.from('books').insert([{
+        title, author, genre, price,
         condition: condition || 'Good condition',
         seller_name: currentUser.user_metadata?.full_name || currentUser.email.split('@')[0],
         seller_id: currentUser.id,
@@ -477,43 +798,29 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
       
       if (error) {
         errorDiv.textContent = error.message;
-        errorDiv.classList.remove('hidden');
+        errorDiv.style.display = 'block';
         return;
       }
       
       closeModals();
-      document.getElementById('sellForm')?.reset();
+      document.getElementById('bookTitle').value = '';
+      document.getElementById('bookAuthor').value = '';
+      document.getElementById('bookPrice').value = '';
+      document.getElementById('sellerPhone').value = '';
+      document.getElementById('bookCondition').value = '';
       alert('✅ Book listed successfully!');
       await loadBooks();
     }
 
-    function showLoginModal() {
-      closeModals();
-      document.getElementById('loginModal').classList.remove('hidden');
-      document.getElementById('loginModal').classList.add('flex');
-    }
-
-    function showSignupModal() {
-      closeModals();
-      document.getElementById('signupModal').classList.remove('hidden');
-      document.getElementById('signupModal').classList.add('flex');
-    }
-
+    // UI functions
+    function showLoginModal() { closeModals(); document.getElementById('loginModal').classList.add('show'); }
+    function showSignupModal() { closeModals(); document.getElementById('signupModal').classList.add('show'); }
     function showSellModal() {
-      if (!currentUser) {
-        showLoginModal();
-        return;
-      }
-      closeModals();
-      document.getElementById('sellModal').classList.remove('hidden');
-      document.getElementById('sellModal').classList.add('flex');
+      if (!currentUser) { showLoginModal(); return; }
+      closeModals(); document.getElementById('sellModal').classList.add('show');
     }
-
     function closeModals() {
-      document.querySelectorAll('.modal').forEach(modal => {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      });
+      document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
     }
 
     function escapeHtml(str) {
@@ -526,29 +833,37 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
       });
     }
 
-    // Event Listeners
-    document.querySelectorAll('.genre-filter').forEach(btn => {
+    // Expose functions globally
+    window.showLoginModal = showLoginModal;
+    window.showSignupModal = showSignupModal;
+    window.showSellModal = showSellModal;
+    window.closeModals = closeModals;
+    window.login = login;
+    window.signup = signup;
+    window.logout = logout;
+    window.publishBook = publishBook;
+
+    // Event listeners
+    document.getElementById('loginBtn').onclick = login;
+    document.getElementById('signupBtn').onclick = signup;
+    document.getElementById('publishBtn').onclick = publishBook;
+    
+    document.querySelectorAll('.genre-btn').forEach(btn => {
       btn.addEventListener('click', function() {
-        document.querySelectorAll('.genre-filter').forEach(b => {
-          b.classList.remove('bg-amber-700', 'text-white');
-          b.classList.add('bg-gray-200', 'text-gray-700');
-        });
-        this.classList.add('bg-amber-700', 'text-white');
-        this.classList.remove('bg-gray-200', 'text-gray-700');
+        document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
         currentGenre = this.dataset.genre;
         loadBooks();
       });
     });
-
-    document.getElementById('searchInput')?.addEventListener('input', (e) => {
+    
+    document.getElementById('searchInput').addEventListener('input', (e) => {
       searchQuery = e.target.value;
       loadBooks();
     });
-
-    window.onclick = (event) => {
-      if (event.target.classList?.contains('modal')) closeModals();
-    };
-
+    
+    window.onclick = (e) => { if (e.target.classList && e.target.classList.contains('modal')) closeModals(); };
+    
     // Start
     checkSession();
   </script>
