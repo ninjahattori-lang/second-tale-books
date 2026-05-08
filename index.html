@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Second Tale | India's Second-Hand Book Marketplace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    * { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #fef3e2 0%, #fff4e8 100%); }
+    .book-card:hover { transform: translateY(-4px); transition: all 0.3s ease; }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm border-b sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-book-open text-amber-700 text-2xl"></i>
+          <span class="font-bold text-xl text-gray-800">Second<span class="text-amber-700">Tale</span></span>
+          <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full ml-2">India</span>
+        </div>
+        
+        <div class="flex items-center gap-4">
+          <div id="authButtons" class="flex gap-3">
+            <button onclick="showLoginModal()" class="px-4 py-2 text-amber-700 border border-amber-700 rounded-lg hover:bg-amber-50 transition">Login</button>
+            <button onclick="showSignupModal()" class="px-4 py-2 bg-amber-700 text-white rounded-lg hover:bg-amber-800 transition">Sign Up</button>
+          </div>
+          <div id="userMenu" class="hidden flex items-center gap-3">
+            <span id="userName" class="text-sm font-medium text-gray-700"></span>
+            <button onclick="logout()" class="text-sm text-red-600 hover:text-red-700">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Hero Section -->
+    <div class="gradient-bg rounded-2xl p-8 mb-8 text-center">
+      <h1 class="text-4xl font-bold text-gray-800 mb-3">Buy & Sell Used Books</h1>
+      <p class="text-gray-600 mb-4">Connect with book lovers across India. No middlemen, direct deals.</p>
+      <button onclick="showSellModal()" id="sellBtn" class="bg-amber-700 text-white px-6 py-3 rounded-full font-semibold hover:bg-amber-800 transition inline-flex items-center gap-2">
+        <i class="fas fa-plus-circle"></i> Sell Your Book
+      </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-xl p-4 shadow-sm mb-6">
+      <div class="flex flex-wrap gap-4 items-center justify-between">
+        <div class="flex-1 min-w-[200px]">
+          <div class="relative">
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <input type="text" id="searchInput" placeholder="Search by title, author, or seller..." class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+          </div>
+        </div>
+        <div class="flex gap-2 overflow-x-auto pb-2">
+          <button class="genre-filter px-4 py-2 rounded-full bg-amber-700 text-white" data-genre="all">All</button>
+          <button class="genre-filter px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300" data-genre="Fiction">Fiction</button>
+          <button class="genre-filter px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300" data-genre="Classic">Classic</button>
+          <button class="genre-filter px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300" data-genre="Mystery">Mystery</button>
+          <button class="genre-filter px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300" data-genre="Sci-Fi">Sci-Fi</button>
+          <button class="genre-filter px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300" data-genre="Romance">Romance</button>
+          <button class="genre-filter px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300" data-genre="Self-Help">Self-Help</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Books Grid -->
+    <div id="booksGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div class="col-span-full text-center py-12 text-gray-500">Loading books...</div>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+      <h2 class="text-2xl font-bold mb-4">Login to SecondTale</h2>
+      <input type="email" id="loginEmail" placeholder="Email address" class="w-full px-4 py-2 border rounded-lg mb-3">
+      <input type="password" id="loginPassword" placeholder="Password" class="w-full px-4 py-2 border rounded-lg mb-4">
+      <button onclick="login()" class="w-full bg-amber-700 text-white py-2 rounded-lg font-semibold mb-3">Login</button>
+      <button onclick="closeModals()" class="w-full border border-gray-300 py-2 rounded-lg">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div id="signupModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+      <h2 class="text-2xl font-bold mb-4">Create Account</h2>
+      <input type="text" id="signupName" placeholder="Full Name" class="w-full px-4 py-2 border rounded-lg mb-3">
+      <input type="email" id="signupEmail" placeholder="Email" class="w-full px-4 py-2 border rounded-lg mb-3">
+      <input type="password" id="signupPassword" placeholder="Password (min 6 chars)" class="w-full px-4 py-2 border rounded-lg mb-4">
+      <button onclick="signup()" class="w-full bg-amber-700 text-white py-2 rounded-lg font-semibold mb-3">Sign Up</button>
+      <button onclick="closeModals()" class="w-full border border-gray-300 py-2 rounded-lg">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Sell Book Modal -->
+  <div id="sellModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 overflow-y-auto">
+    <div class="bg-white rounded-2xl p-8 max-w-lg w-full mx-4 my-8">
+      <h2 class="text-2xl font-bold mb-4">List Your Book</h2>
+      <form id="sellForm">
+        <input type="text" id="bookTitle" placeholder="Book Title *" required class="w-full px-4 py-2 border rounded-lg mb-3">
+        <input type="text" id="bookAuthor" placeholder="Author *" required class="w-full px-4 py-2 border rounded-lg mb-3">
+        <select id="bookGenre" class="w-full px-4 py-2 border rounded-lg mb-3">
+          <option value="Fiction">Fiction</option><option value="Classic">Classic</option>
+          <option value="Mystery">Mystery</option><option value="Sci-Fi">Sci-Fi</option>
+          <option value="Romance">Romance</option><option value="Self-Help">Self-Help</option>
+        </select>
+        <input type="number" id="bookPrice" placeholder="Price (₹) *" required class="w-full px-4 py-2 border rounded-lg mb-3">
+        <textarea id="bookCondition" rows="3" placeholder="Condition (e.g., Like new, some highlights, etc.)" class="w-full px-4 py-2 border rounded-lg mb-3"></textarea>
+        <div class="flex gap-3">
+          <button type="submit" class="flex-1 bg-amber-700 text-white py-2 rounded-lg font-semibold">Publish Listing</button>
+          <button type="button" onclick="closeModals()" class="flex-1 border border-gray-300 py-2 rounded-lg">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Chat Modal -->
+  <div id="chatModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-2xl w-full max-w-md h-96 flex flex-col">
+      <div class="p-4 border-b flex justify-between">
+        <h3 id="chatWith" class="font-semibold">Chat</h3>
+        <button onclick="closeModals()" class="text-gray-500">&times;</button>
+      </div>
+      <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
+      <div class="p-4 border-t flex gap-2">
+        <input type="text" id="chatInput" placeholder="Type a message..." class="flex-1 border rounded-lg px-3 py-2">
+        <button onclick="sendMessage()" class="bg-amber-700 text-white px-4 rounded-lg">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // IMPORTANT: Replace with your Supabase credentials after setup
+    // Get these from https://supabase.com
+    const SUPABASE_URL = 'https://vhdziqbrhwmjelextecs.supabase.co/rest/v1/';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZHppcWJyaHdtamVsZXh0ZWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNTMyMTcsImV4cCI6MjA5MzgyOTIxN30.irxpciK3YgA8Kdze8e1adWgCJos99NRCgQxzWmkSEFc';
+    
+    let currentUser = null;
+    let currentChatListingId = null;
+    let currentChatSellerId = null;
+
+    // Mock data for demo (replace with Supabase)
+    let books = [
+      { id: 1, title: "The Silent Patient", author: "Alex Michaelides", genre: "Mystery", price: 350, condition: "Like new", seller_name: "Rahul Sharma", seller_id: "user1", seller_phone: "9876543210", created_at: new Date().toISOString() },
+      { id: 2, title: "Atomic Habits", author: "James Clear", genre: "Self-Help", price: 280, condition: "Good condition", seller_name: "Priya Verma", seller_id: "user2", seller_phone: "9876543211", created_at: new Date().toISOString() }
+    ];
+
+    let currentGenre = 'all';
+    let searchQuery = '';
+
+    function renderBooks() {
+      let filtered = books.filter(book => {
+        if (currentGenre !== 'all' && book.genre !== currentGenre) return false;
+        if (searchQuery && !book.title.toLowerCase().includes(searchQuery.toLowerCase()) && 
+            !book.author.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+        return true;
+      });
+
+      const grid = document.getElementById('booksGrid');
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">No books found. Be the first to list one!</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(book => `
+        <div class="book-card bg-white rounded-xl shadow-sm hover:shadow-md transition border overflow-hidden">
+          <div class="h-40 bg-amber-50 flex items-center justify-center">
+            <i class="fas fa-book text-5xl text-amber-600"></i>
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-lg mb-1">${escapeHtml(book.title)}</h3>
+            <p class="text-sm text-gray-600 mb-2">by ${escapeHtml(book.author)}</p>
+            <span class="inline-block text-xs bg-gray-100 px-2 py-1 rounded mb-2">${book.genre}</span>
+            <p class="text-sm text-gray-500 mb-2">📖 ${escapeHtml(book.condition)}</p>
+            <div class="flex items-center justify-between mt-3">
+              <span class="text-2xl font-bold text-amber-700">₹${book.price}</span>
+              <div class="flex gap-2">
+                ${currentUser ? `
+                  <button onclick="contactSeller(${book.id}, '${book.seller_id}', '${escapeHtml(book.title)}')" class="text-sm bg-green-600 text-white px-3 py-1 rounded-lg hover:bg-green-700">
+                    <i class="fab fa-whatsapp"></i> Contact
+                  </button>
+                ` : `
+                  <button onclick="showLoginModal()" class="text-sm bg-gray-600 text-white px-3 py-1 rounded-lg">Login to Contact</button>
+                `}
+              </div>
+            </div>
+            <p class="text-xs text-gray-400 mt-2">Seller: ${escapeHtml(book.seller_name)}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    function contactSeller(bookId, sellerId, bookTitle) {
+      if (!currentUser) { showLoginModal(); return; }
+      const book = books.find(b => b.id === bookId);
+      if (book && book.seller_phone) {
+        window.open(`https://wa.me/91${book.seller_phone}?text=Hi! I'm interested in "${bookTitle}" on SecondTale. Is it still available?`, '_blank');
+        Swal.fire('Opening WhatsApp', `You can now chat directly with the seller about "${bookTitle}"`, 'success');
+      } else {
+        Swal.fire('Coming Soon', 'In-app messaging will be available in the next update. For now, please check back.', 'info');
+      }
+    }
+
+    // Auth functions (mock for demo - replace with Supabase)
+    function showLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); document.getElementById('loginModal').classList.add('flex'); }
+    function showSignupModal() { document.getElementById('signupModal').classList.remove('hidden'); document.getElementById('signupModal').classList.add('flex'); }
+    function closeModals() {
+      document.querySelectorAll('.fixed').forEach(modal => { modal.classList.add('hidden'); modal.classList.remove('flex'); });
+    }
+
+    function login() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      if (email && password) {
+        currentUser = { email: email, name: email.split('@')[0], id: 'user_' + Date.now() };
+        document.getElementById('authButtons').classList.add('hidden');
+        document.getElementById('userMenu').classList.remove('hidden');
+        document.getElementById('userName').innerText = currentUser.name;
+        closeModals();
+        Swal.fire('Welcome!', 'You are now logged in. You can now contact sellers.', 'success');
+        document.getElementById('sellBtn').style.display = 'inline-flex';
+      } else {
+        Swal.fire('Error', 'Please enter email and password', 'error');
+      }
+    }
+
+    function signup() {
+      const name = document.getElementById('signupName').value;
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+      if (name && email && password && password.length >= 6) {
+        currentUser = { email: email, name: name, id: 'user_' + Date.now() };
+        document.getElementById('authButtons').classList.add('hidden');
+        document.getElementById('userMenu').classList.remove('hidden');
+        document.getElementById('userName').innerText = currentUser.name;
+        closeModals();
+        Swal.fire('Account Created!', 'You can now sell and buy books.', 'success');
+        document.getElementById('sellBtn').style.display = 'inline-flex';
+      } else {
+        Swal.fire('Error', 'Please fill all fields correctly (password min 6 chars)', 'error');
+      }
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById('authButtons').classList.remove('hidden');
+      document.getElementById('userMenu').classList.add('hidden');
+      Swal.fire('Logged Out', 'Come back soon!', 'info');
+    }
+
+    function showSellModal() {
+      if (!currentUser) { showLoginModal(); Swal.fire('Login Required', 'Please login to sell books', 'info'); return; }
+      document.getElementById('sellModal').classList.remove('hidden');
+      document.getElementById('sellModal').classList.add('flex');
+    }
+
+    document.getElementById('sellForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!currentUser) { showLoginModal(); return; }
+      const newBook = {
+        id: Date.now(),
+        title: document.getElementById('bookTitle').value,
+        author: document.getElementById('bookAuthor').value,
+        genre: document.getElementById('bookGenre').value,
+        price: parseInt(document.getElementById('bookPrice').value),
+        condition: document.getElementById('bookCondition').value || 'Good condition',
+        seller_name: currentUser.name,
+        seller_id: currentUser.id,
+        seller_phone: '9876543210', // In real app, get from user profile
+        created_at: new Date().toISOString()
+      };
+      books.unshift(newBook);
+      renderBooks();
+      closeModals();
+      document.getElementById('sellForm').reset();
+      Swal.fire('Listed!', 'Your book is now visible to all buyers.', 'success');
+    });
+
+    // Filters
+    document.querySelectorAll('.genre-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.genre-filter').forEach(b => {
+          b.classList.remove('bg-amber-700', 'text-white');
+          b.classList.add('bg-gray-200', 'text-gray-700');
+        });
+        btn.classList.add('bg-amber-700', 'text-white');
+        btn.classList.remove('bg-gray-200', 'text-gray-700');
+        currentGenre = btn.dataset.genre;
+        renderBooks();
+      });
+    });
+
+    document.getElementById('searchInput')?.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderBooks();
+    });
+
+    // Initialize
+    renderBooks();
+    if (!currentUser) document.getElementById('sellBtn').style.display = 'none';
+  </script>
+</body>
+</html>
