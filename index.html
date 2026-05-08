@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Second Tale | India's Second-Hand Book Marketplace</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,6 +13,8 @@
     .book-card { transition: all 0.3s ease; }
     .book-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
     .modal { transition: all 0.3s ease; }
+    .error-border { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+    .success-border { border-color: #10b981 !important; }
   </style>
 </head>
 <body class="bg-gray-50">
@@ -54,7 +56,7 @@
     </div>
 
     <!-- Stats Bar -->
-    <div id="statsBar" class="bg-white rounded-xl p-4 shadow-sm mb-6 flex justify-between items-center">
+    <div class="bg-white rounded-xl p-4 shadow-sm mb-6 flex justify-between items-center">
       <div class="text-sm text-gray-600">
         <i class="fas fa-book text-amber-600"></i> <span id="bookCount">0</span> books available
       </div>
@@ -97,6 +99,7 @@
   <div id="loginModal" class="modal fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
     <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
       <h2 class="text-2xl font-bold mb-4">Welcome Back</h2>
+      <div id="loginError" class="hidden bg-red-50 text-red-600 p-2 rounded-lg mb-3 text-sm"></div>
       <input type="email" id="loginEmail" placeholder="Email address" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
       <input type="password" id="loginPassword" placeholder="Password" class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring-2 focus:ring-amber-500 outline-none">
       <button onclick="login()" class="w-full bg-amber-700 text-white py-2 rounded-lg font-semibold mb-3 hover:bg-amber-800 transition">Login</button>
@@ -111,10 +114,12 @@
   <div id="signupModal" class="modal fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
     <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
       <h2 class="text-2xl font-bold mb-4">Create Account</h2>
+      <div id="signupError" class="hidden bg-red-50 text-red-600 p-2 rounded-lg mb-3 text-sm"></div>
       <input type="text" id="signupName" placeholder="Full Name" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
       <input type="email" id="signupEmail" placeholder="Email" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
       <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" class="w-full px-4 py-2 border rounded-lg mb-2 focus:ring-2 focus:ring-amber-500 outline-none">
-      <p class="text-xs text-gray-500 mb-4">We'll create an account for you to track your listings.</p>
+      <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
+      <p class="text-xs text-gray-500 mb-4">Password must be at least 6 characters</p>
       <button onclick="signup()" class="w-full bg-amber-700 text-white py-2 rounded-lg font-semibold mb-3 hover:bg-amber-800 transition">Sign Up</button>
       <button onclick="closeModals()" class="w-full border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition">Cancel</button>
       <p class="text-center text-sm text-gray-500 mt-3">
@@ -127,6 +132,7 @@
   <div id="sellModal" class="modal fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 overflow-y-auto">
     <div class="bg-white rounded-2xl p-8 max-w-lg w-full mx-4 my-8">
       <h2 class="text-2xl font-bold mb-4">List Your Book</h2>
+      <div id="sellError" class="hidden bg-red-50 text-red-600 p-2 rounded-lg mb-3 text-sm"></div>
       <form id="sellForm" onsubmit="return false;">
         <input type="text" id="bookTitle" placeholder="Book Title *" required class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
         <input type="text" id="bookAuthor" placeholder="Author *" required class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
@@ -139,7 +145,7 @@
           <option value="Self-Help">Self-Help</option>
         </select>
         <input type="number" id="bookPrice" placeholder="Price (₹) *" required class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-        <input type="tel" id="sellerPhone" placeholder="Your WhatsApp Number * (with country code)" required class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
+        <input type="tel" id="sellerPhone" placeholder="Your WhatsApp Number * (10 digits)" required class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
         <textarea id="bookCondition" rows="3" placeholder="Condition (e.g., Like new, few highlights, slightly used)" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
         <div class="flex gap-3">
           <button type="button" onclick="publishBook()" class="flex-1 bg-amber-700 text-white py-2 rounded-lg font-semibold hover:bg-amber-800 transition">Publish Listing</button>
@@ -150,12 +156,24 @@
   </div>
 
   <script>
-    // ============ DATA STORAGE (localStorage) ============
+    // ============ DATA STORAGE (localStorage with real validation) ============
     let books = [];
     let users = [];
     let currentUser = null;
     let currentGenre = 'all';
     let searchQuery = '';
+
+    // Email validation
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    // Phone validation
+    function isValidPhone(phone) {
+      const phoneRegex = /^[0-9]{10}$/;
+      return phoneRegex.test(phone);
+    }
 
     // Load data from localStorage
     function loadData() {
@@ -168,14 +186,14 @@
       } else {
         // Default books
         books = [
-          { id: 1, title: "The Silent Patient", author: "Alex Michaelides", genre: "Mystery", price: 350, condition: "Like new, no marks", seller_name: "Rahul Sharma", seller_phone: "919876543210", seller_id: "user1", created_at: new Date().toISOString() },
-          { id: 2, title: "Atomic Habits", author: "James Clear", genre: "Self-Help", price: 280, condition: "Good condition, few highlights", seller_name: "Priya Verma", seller_phone: "919876543211", seller_id: "user2", created_at: new Date().toISOString() },
-          { id: 3, title: "Pride and Prejudice", author: "Jane Austen", genre: "Classic", price: 190, condition: "Old but well preserved", seller_name: "Neha Gupta", seller_phone: "919876543212", seller_id: "user3", created_at: new Date().toISOString() },
-          { id: 4, title: "Dune", author: "Frank Herbert", genre: "Sci-Fi", price: 420, condition: "Collector's edition", seller_name: "Amit Kumar", seller_phone: "919876543213", seller_id: "user4", created_at: new Date().toISOString() },
-          { id: 5, title: "It Ends With Us", author: "Colleen Hoover", genre: "Romance", price: 260, condition: "Read once, like new", seller_name: "Sneha Reddy", seller_phone: "919876543214", seller_id: "user5", created_at: new Date().toISOString() },
-          { id: 6, title: "1984", author: "George Orwell", genre: "Classic", price: 210, condition: "Good reading copy", seller_name: "Vikram Singh", seller_phone: "919876543215", seller_id: "user6", created_at: new Date().toISOString() },
-          { id: 7, title: "Project Hail Mary", author: "Andy Weir", genre: "Sci-Fi", price: 390, condition: "Excellent condition", seller_name: "Kavya Nair", seller_phone: "919876543216", seller_id: "user7", created_at: new Date().toISOString() },
-          { id: 8, title: "Normal People", author: "Sally Rooney", genre: "Romance", price: 230, condition: "Minor cover wear", seller_name: "Anjali Menon", seller_phone: "919876543217", seller_id: "user8", created_at: new Date().toISOString() }
+          { id: 1, title: "The Silent Patient", author: "Alex Michaelides", genre: "Mystery", price: 350, condition: "Like new, no marks", seller_name: "Rahul Sharma", seller_phone: "9876543210", seller_id: "user1", created_at: new Date().toISOString() },
+          { id: 2, title: "Atomic Habits", author: "James Clear", genre: "Self-Help", price: 280, condition: "Good condition, few highlights", seller_name: "Priya Verma", seller_phone: "9876543211", seller_id: "user2", created_at: new Date().toISOString() },
+          { id: 3, title: "Pride and Prejudice", author: "Jane Austen", genre: "Classic", price: 190, condition: "Old but well preserved", seller_name: "Neha Gupta", seller_phone: "9876543212", seller_id: "user3", created_at: new Date().toISOString() },
+          { id: 4, title: "Dune", author: "Frank Herbert", genre: "Sci-Fi", price: 420, condition: "Collector's edition", seller_name: "Amit Kumar", seller_phone: "9876543213", seller_id: "user4", created_at: new Date().toISOString() },
+          { id: 5, title: "It Ends With Us", author: "Colleen Hoover", genre: "Romance", price: 260, condition: "Read once, like new", seller_name: "Sneha Reddy", seller_phone: "9876543214", seller_id: "user5", created_at: new Date().toISOString() },
+          { id: 6, title: "1984", author: "George Orwell", genre: "Classic", price: 210, condition: "Good reading copy", seller_name: "Vikram Singh", seller_phone: "9876543215", seller_id: "user6", created_at: new Date().toISOString() },
+          { id: 7, title: "Project Hail Mary", author: "Andy Weir", genre: "Sci-Fi", price: 390, condition: "Excellent condition", seller_name: "Kavya Nair", seller_phone: "9876543216", seller_id: "user7", created_at: new Date().toISOString() },
+          { id: 8, title: "Normal People", author: "Sally Rooney", genre: "Romance", price: 230, condition: "Minor cover wear", seller_name: "Anjali Menon", seller_phone: "9876543217", seller_id: "user8", created_at: new Date().toISOString() }
         ];
         saveBooks();
       }
@@ -183,7 +201,15 @@
       if (storedUsers) {
         users = JSON.parse(storedUsers);
       } else {
-        users = [];
+        // Add a demo user
+        users = [{
+          id: "demo_user",
+          name: "Demo User",
+          email: "demo@secondtale.com",
+          password: "demo123",
+          created_at: new Date().toISOString()
+        }];
+        saveUsers();
       }
       
       if (storedSession) {
@@ -210,7 +236,7 @@
       if (currentUser) {
         localStorage.setItem('secondtale_session', JSON.stringify({
           user: currentUser,
-          expiry: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days
+          expiry: Date.now() + 7 * 24 * 60 * 60 * 1000
         }));
       } else {
         localStorage.removeItem('secondtale_session');
@@ -236,15 +262,23 @@
       document.getElementById('sellerCount').innerText = uniqueSellers;
     }
 
-    // ============ AUTH FUNCTIONS ============
+    // ============ AUTH FUNCTIONS WITH REAL VALIDATION ============
     function showLoginModal() {
       closeModals();
+      document.getElementById('loginError').classList.add('hidden');
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginPassword').value = '';
       document.getElementById('loginModal').classList.remove('hidden');
       document.getElementById('loginModal').classList.add('flex');
     }
 
     function showSignupModal() {
       closeModals();
+      document.getElementById('signupError').classList.add('hidden');
+      document.getElementById('signupName').value = '';
+      document.getElementById('signupEmail').value = '';
+      document.getElementById('signupPassword').value = '';
+      document.getElementById('signupConfirmPassword').value = '';
       document.getElementById('signupModal').classList.remove('hidden');
       document.getElementById('signupModal').classList.add('flex');
     }
@@ -256,6 +290,8 @@
         return;
       }
       closeModals();
+      document.getElementById('sellError').classList.add('hidden');
+      document.getElementById('sellForm').reset();
       document.getElementById('sellModal').classList.remove('hidden');
       document.getElementById('sellModal').classList.add('flex');
     }
@@ -270,12 +306,22 @@
     function login() {
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
+      const errorDiv = document.getElementById('loginError');
       
+      // Validation
       if (!email || !password) {
-        alert('Please enter email and password');
+        errorDiv.textContent = 'Please enter both email and password';
+        errorDiv.classList.remove('hidden');
         return;
       }
       
+      if (!isValidEmail(email)) {
+        errorDiv.textContent = 'Please enter a valid email address (e.g., name@example.com)';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+      
+      // Find user
       const user = users.find(u => u.email === email && u.password === password);
       
       if (user) {
@@ -283,12 +329,11 @@
         saveSession();
         updateUIBasedOnAuth();
         closeModals();
-        document.getElementById('loginEmail').value = '';
-        document.getElementById('loginPassword').value = '';
         alert(`Welcome back, ${user.name}!`);
-        renderBooks(); // Refresh to show contact buttons
+        renderBooks();
       } else {
-        alert('Invalid email or password. Please sign up first.');
+        errorDiv.textContent = 'Invalid email or password. Please check your credentials or sign up.';
+        errorDiv.classList.remove('hidden');
       }
     }
 
@@ -296,22 +341,48 @@
       const name = document.getElementById('signupName').value.trim();
       const email = document.getElementById('signupEmail').value.trim();
       const password = document.getElementById('signupPassword').value;
+      const confirmPassword = document.getElementById('signupConfirmPassword').value;
+      const errorDiv = document.getElementById('signupError');
       
-      if (!name || !email || !password) {
-        alert('Please fill all fields');
+      // Validation
+      if (!name || !email || !password || !confirmPassword) {
+        errorDiv.textContent = 'Please fill all fields';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+      
+      if (name.length < 2) {
+        errorDiv.textContent = 'Name must be at least 2 characters';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+      
+      if (!isValidEmail(email)) {
+        errorDiv.textContent = 'Please enter a valid email address (e.g., name@example.com)';
+        errorDiv.classList.remove('hidden');
         return;
       }
       
       if (password.length < 6) {
-        alert('Password must be at least 6 characters');
+        errorDiv.textContent = 'Password must be at least 6 characters';
+        errorDiv.classList.remove('hidden');
         return;
       }
       
+      if (password !== confirmPassword) {
+        errorDiv.textContent = 'Passwords do not match';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+      
+      // Check if email already exists
       if (users.find(u => u.email === email)) {
-        alert('Email already registered. Please login.');
+        errorDiv.textContent = 'Email already registered. Please login instead.';
+        errorDiv.classList.remove('hidden');
         return;
       }
       
+      // Create new user
       const newUser = {
         id: 'user_' + Date.now(),
         name: name,
@@ -327,9 +398,6 @@
       saveSession();
       updateUIBasedOnAuth();
       closeModals();
-      document.getElementById('signupName').value = '';
-      document.getElementById('signupEmail').value = '';
-      document.getElementById('signupPassword').value = '';
       alert(`Welcome to SecondTale, ${name}! You can now list books for sale.`);
       renderBooks();
     }
@@ -355,9 +423,30 @@
       const price = parseInt(document.getElementById('bookPrice').value);
       const sellerPhone = document.getElementById('sellerPhone').value.trim();
       const condition = document.getElementById('bookCondition').value.trim();
+      const errorDiv = document.getElementById('sellError');
       
+      // Validation
       if (!title || !author || !price || !sellerPhone) {
-        alert('Please fill all required fields');
+        errorDiv.textContent = 'Please fill all required fields (*)';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+      
+      if (title.length < 2) {
+        errorDiv.textContent = 'Book title must be at least 2 characters';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+      
+      if (price <= 0 || isNaN(price)) {
+        errorDiv.textContent = 'Please enter a valid price';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+      
+      if (!isValidPhone(sellerPhone)) {
+        errorDiv.textContent = 'Please enter a valid 10-digit phone number';
+        errorDiv.classList.remove('hidden');
         return;
       }
       
@@ -369,7 +458,7 @@
         price: price,
         condition: condition || 'Good condition',
         seller_name: currentUser.name,
-        seller_phone: sellerPhone.replace(/\D/g, ''), // Keep only digits
+        seller_phone: sellerPhone,
         seller_id: currentUser.id,
         created_at: new Date().toISOString()
       };
@@ -379,8 +468,7 @@
       renderBooks();
       updateStats();
       closeModals();
-      document.getElementById('sellForm').reset();
-      alert('Your book has been listed successfully! Buyers can now contact you.');
+      alert('Your book has been listed successfully! Buyers can now contact you via WhatsApp.');
     }
 
     function renderBooks() {
@@ -418,9 +506,9 @@
             <i class="fas fa-book-open text-4xl text-amber-600"></i>
           </div>
           <div class="p-4">
-            <h3 class="font-bold text-lg mb-1 line-clamp-1">${escapeHtml(book.title)}</h3>
+            <h3 class="font-bold text-lg mb-1 truncate">${escapeHtml(book.title)}</h3>
             <p class="text-sm text-gray-600 mb-2">by ${escapeHtml(book.author)}</p>
-            <div class="flex items-center gap-2 mb-2">
+            <div class="flex items-center gap-2 mb-2 flex-wrap">
               <span class="inline-block text-xs bg-gray-100 px-2 py-1 rounded">${book.genre}</span>
               <span class="inline-block text-xs bg-green-100 text-green-700 px-2 py-1 rounded"><i class="fas fa-tag"></i> ₹${book.price}</span>
             </div>
@@ -430,7 +518,7 @@
                 <i class="fas fa-user"></i> ${escapeHtml(book.seller_name)}
               </div>
               ${currentUser ? `
-                <a href="https://wa.me/${book.seller_phone}?text=Hi! I'm interested in "${book.title}" listed on SecondTale. Is it still available? Price: ₹${book.price}" 
+                <a href="https://wa.me/91${book.seller_phone}?text=Hi! I'm interested in "${book.title}" listed on SecondTale. Price: ₹${book.price}" 
                    target="_blank"
                    class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-green-700 transition inline-flex items-center gap-1">
                   <i class="fab fa-whatsapp"></i> Contact
@@ -477,7 +565,7 @@
 
     // Close modals when clicking outside
     window.onclick = function(event) {
-      if (event.target.classList.contains('modal')) {
+      if (event.target.classList && event.target.classList.contains('modal')) {
         closeModals();
       }
     };
