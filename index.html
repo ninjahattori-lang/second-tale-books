@@ -172,8 +172,8 @@
   <script>
     // ============ SUPABASE CONFIGURATION ============
     // 🔴 REPLACE THESE WITH YOUR ACTUAL SUPABASE CREDENTIALS 🔴
-    const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';  // ← PASTE YOUR URL HERE
-    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';  // ← PASTE YOUR ANON KEY HERE
+    const SUPABASE_URL = 'https://vhdziqbrhwmjelextecs.supabase.co/rest/v1/';  // ← PASTE YOUR URL HERE
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZHppcWJyaHdtamVsZXh0ZWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNTMyMTcsImV4cCI6MjA5MzgyOTIxN30.irxpciK3YgA8Kdze8e1adWgCJos99NRCgQxzWmkSEFc';  // ← PASTE YOUR ANON KEY HERE
     
     let supabase;
     let currentUser = null;
@@ -183,7 +183,7 @@
 
     // Initialize Supabase
     function initSupabase() {
-      if (SUPABASE_URL === 'https://YOUR_PROJECT.supabase.co') {
+      if (SUPABASE_URL === 'https://vhdziqbrhwmjelextecs.supabase.co/rest/v1/') {
         console.error('Please configure your Supabase URL and Anon Key in the code');
         document.getElementById('booksGrid').innerHTML = `
           <div class="col-span-full text-center py-12 text-red-500">
