@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Second Tale | India's Second-Hand Book Marketplace</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -13,8 +14,8 @@
     .book-card { transition: all 0.3s ease; }
     .book-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
     .modal { transition: all 0.3s ease; }
-    .error-border { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
-    .success-border { border-color: #10b981 !important; }
+    .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #f3f3f3; border-top: 2px solid #d97706; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
 <body class="bg-gray-50">
@@ -36,6 +37,7 @@
           </div>
           <div id="userMenu" class="hidden flex items-center gap-3">
             <span id="userName" class="text-sm font-medium text-gray-700"></span>
+            <span id="verifiedBadge" class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full hidden">✓ Verified</span>
             <button onclick="logout()" class="text-sm text-red-600 hover:text-red-700">Logout</button>
           </div>
         </div>
@@ -89,8 +91,8 @@
     <!-- Books Grid -->
     <div id="booksGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <div class="col-span-full text-center py-12 text-gray-500">
-        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-        <p>Loading books...</p>
+        <div class="loading-spinner mx-auto mb-2"></div>
+        <p>Loading books from database...</p>
       </div>
     </div>
   </div>
@@ -102,7 +104,7 @@
       <div id="loginError" class="hidden bg-red-50 text-red-600 p-2 rounded-lg mb-3 text-sm"></div>
       <input type="email" id="loginEmail" placeholder="Email address" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
       <input type="password" id="loginPassword" placeholder="Password" class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring-2 focus:ring-amber-500 outline-none">
-      <button onclick="login()" class="w-full bg-amber-700 text-white py-2 rounded-lg font-semibold mb-3 hover:bg-amber-800 transition">Login</button>
+      <button onclick="login()" id="loginBtn" class="w-full bg-amber-700 text-white py-2 rounded-lg font-semibold mb-3 hover:bg-amber-800 transition">Login</button>
       <button onclick="closeModals()" class="w-full border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition">Cancel</button>
       <p class="text-center text-sm text-gray-500 mt-3">
         Don't have an account? <a href="#" onclick="showSignupModal(); return false;" class="text-amber-700">Sign up</a>
@@ -119,12 +121,24 @@
       <input type="email" id="signupEmail" placeholder="Email" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
       <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" class="w-full px-4 py-2 border rounded-lg mb-2 focus:ring-2 focus:ring-amber-500 outline-none">
       <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
-      <p class="text-xs text-gray-500 mb-4">Password must be at least 6 characters</p>
-      <button onclick="signup()" class="w-full bg-amber-700 text-white py-2 rounded-lg font-semibold mb-3 hover:bg-amber-800 transition">Sign Up</button>
+      <p class="text-xs text-gray-500 mb-4">Password must be at least 6 characters. You'll need to verify your email.</p>
+      <button onclick="signup()" id="signupBtn" class="w-full bg-amber-700 text-white py-2 rounded-lg font-semibold mb-3 hover:bg-amber-800 transition">Sign Up</button>
       <button onclick="closeModals()" class="w-full border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition">Cancel</button>
       <p class="text-center text-sm text-gray-500 mt-3">
         Already have an account? <a href="#" onclick="showLoginModal(); return false;" class="text-amber-700">Login</a>
       </p>
+    </div>
+  </div>
+
+  <!-- Email Verification Modal -->
+  <div id="verifyModal" class="modal fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 text-center">
+      <i class="fas fa-envelope text-5xl text-amber-700 mb-4"></i>
+      <h2 class="text-2xl font-bold mb-3">Verify Your Email</h2>
+      <p class="text-gray-600 mb-4">We've sent a verification link to <span id="verifyEmailAddress" class="font-bold"></span></p>
+      <p class="text-sm text-gray-500 mb-4">Please check your inbox and click the verification link to complete signup.</p>
+      <button onclick="closeModals()" class="bg-amber-700 text-white px-6 py-2 rounded-lg">OK, I'll verify</button>
+      <button onclick="resendVerification()" class="block w-full text-center text-amber-700 mt-3 text-sm">Resend email</button>
     </div>
   </div>
 
@@ -148,7 +162,7 @@
         <input type="tel" id="sellerPhone" placeholder="Your WhatsApp Number * (10 digits)" required class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none">
         <textarea id="bookCondition" rows="3" placeholder="Condition (e.g., Like new, few highlights, slightly used)" class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
         <div class="flex gap-3">
-          <button type="button" onclick="publishBook()" class="flex-1 bg-amber-700 text-white py-2 rounded-lg font-semibold hover:bg-amber-800 transition">Publish Listing</button>
+          <button type="button" onclick="publishBook()" id="publishBtn" class="flex-1 bg-amber-700 text-white py-2 rounded-lg font-semibold hover:bg-amber-800 transition">Publish Listing</button>
           <button type="button" onclick="closeModals()" class="flex-1 border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition">Cancel</button>
         </div>
       </form>
@@ -156,113 +170,144 @@
   </div>
 
   <script>
-    // ============ DATA STORAGE (localStorage with real validation) ============
-    let books = [];
-    let users = [];
+    // ============ SUPABASE CONFIGURATION ============
+    // 🔴 REPLACE THESE WITH YOUR ACTUAL SUPABASE CREDENTIALS 🔴
+    const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';  // ← PASTE YOUR URL HERE
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';  // ← PASTE YOUR ANON KEY HERE
+    
+    let supabase;
     let currentUser = null;
+    let currentSession = null;
     let currentGenre = 'all';
     let searchQuery = '';
 
-    // Email validation
-    function isValidEmail(email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
-    }
-
-    // Phone validation
-    function isValidPhone(phone) {
-      const phoneRegex = /^[0-9]{10}$/;
-      return phoneRegex.test(phone);
-    }
-
-    // Load data from localStorage
-    function loadData() {
-      const storedBooks = localStorage.getItem('secondtale_books');
-      const storedUsers = localStorage.getItem('secondtale_users');
-      const storedSession = localStorage.getItem('secondtale_session');
-      
-      if (storedBooks) {
-        books = JSON.parse(storedBooks);
-      } else {
-        // Default books
-        books = [
-          { id: 1, title: "The Silent Patient", author: "Alex Michaelides", genre: "Mystery", price: 350, condition: "Like new, no marks", seller_name: "Rahul Sharma", seller_phone: "9876543210", seller_id: "user1", created_at: new Date().toISOString() },
-          { id: 2, title: "Atomic Habits", author: "James Clear", genre: "Self-Help", price: 280, condition: "Good condition, few highlights", seller_name: "Priya Verma", seller_phone: "9876543211", seller_id: "user2", created_at: new Date().toISOString() },
-          { id: 3, title: "Pride and Prejudice", author: "Jane Austen", genre: "Classic", price: 190, condition: "Old but well preserved", seller_name: "Neha Gupta", seller_phone: "9876543212", seller_id: "user3", created_at: new Date().toISOString() },
-          { id: 4, title: "Dune", author: "Frank Herbert", genre: "Sci-Fi", price: 420, condition: "Collector's edition", seller_name: "Amit Kumar", seller_phone: "9876543213", seller_id: "user4", created_at: new Date().toISOString() },
-          { id: 5, title: "It Ends With Us", author: "Colleen Hoover", genre: "Romance", price: 260, condition: "Read once, like new", seller_name: "Sneha Reddy", seller_phone: "9876543214", seller_id: "user5", created_at: new Date().toISOString() },
-          { id: 6, title: "1984", author: "George Orwell", genre: "Classic", price: 210, condition: "Good reading copy", seller_name: "Vikram Singh", seller_phone: "9876543215", seller_id: "user6", created_at: new Date().toISOString() },
-          { id: 7, title: "Project Hail Mary", author: "Andy Weir", genre: "Sci-Fi", price: 390, condition: "Excellent condition", seller_name: "Kavya Nair", seller_phone: "9876543216", seller_id: "user7", created_at: new Date().toISOString() },
-          { id: 8, title: "Normal People", author: "Sally Rooney", genre: "Romance", price: 230, condition: "Minor cover wear", seller_name: "Anjali Menon", seller_phone: "9876543217", seller_id: "user8", created_at: new Date().toISOString() }
-        ];
-        saveBooks();
+    // Initialize Supabase
+    function initSupabase() {
+      if (SUPABASE_URL === 'https://YOUR_PROJECT.supabase.co') {
+        console.error('Please configure your Supabase URL and Anon Key in the code');
+        document.getElementById('booksGrid').innerHTML = `
+          <div class="col-span-full text-center py-12 text-red-500">
+            <i class="fas fa-exclamation-triangle text-3xl mb-2"></i>
+            <p>Supabase not configured!</p>
+            <p class="text-sm mt-2">Please add your SUPABASE_URL and SUPABASE_ANON_KEY in the code.</p>
+          </div>
+        `;
+        return false;
       }
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      return true;
+    }
+
+    // Check current session on load
+    async function checkSession() {
+      if (!initSupabase()) return;
       
-      if (storedUsers) {
-        users = JSON.parse(storedUsers);
-      } else {
-        // Add a demo user
-        users = [{
-          id: "demo_user",
-          name: "Demo User",
-          email: "demo@secondtale.com",
-          password: "demo123",
-          created_at: new Date().toISOString()
-        }];
-        saveUsers();
-      }
-      
-      if (storedSession) {
-        const session = JSON.parse(storedSession);
-        if (session && session.expiry > Date.now()) {
-          currentUser = session.user;
-          updateUIBasedOnAuth();
-        }
-      }
-      
-      renderBooks();
-      updateStats();
-    }
-
-    function saveBooks() {
-      localStorage.setItem('secondtale_books', JSON.stringify(books));
-    }
-
-    function saveUsers() {
-      localStorage.setItem('secondtale_users', JSON.stringify(users));
-    }
-
-    function saveSession() {
-      if (currentUser) {
-        localStorage.setItem('secondtale_session', JSON.stringify({
-          user: currentUser,
-          expiry: Date.now() + 7 * 24 * 60 * 60 * 1000
-        }));
-      } else {
-        localStorage.removeItem('secondtale_session');
-      }
-    }
-
-    function updateUIBasedOnAuth() {
-      if (currentUser) {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (session && session.user) {
+        currentSession = session;
+        currentUser = session.user;
+        
+        const isVerified = session.user.email_confirmed_at;
+        
         document.getElementById('authButtons').classList.add('hidden');
         document.getElementById('userMenu').classList.remove('hidden');
-        document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${currentUser.name}`;
-        document.getElementById('sellBtn').style.display = 'inline-flex';
+        document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.user_metadata?.full_name || session.user.email.split('@')[0]}`;
+        
+        if (isVerified) {
+          document.getElementById('verifiedBadge').classList.remove('hidden');
+        }
+        
+        loadBooks();
       } else {
-        document.getElementById('authButtons').classList.remove('hidden');
-        document.getElementById('userMenu').classList.add('hidden');
-        document.getElementById('sellBtn').style.display = 'none';
+        loadBooks();
       }
     }
 
-    function updateStats() {
+    // Load books from Supabase
+    async function loadBooks() {
+      if (!supabase) {
+        if (!initSupabase()) return;
+      }
+      
+      let query = supabase.from('books').select('*').order('created_at', { ascending: false });
+      
+      if (currentGenre !== 'all') {
+        query = query.eq('genre', currentGenre);
+      }
+      
+      if (searchQuery) {
+        query = query.or(`title.ilike.%${searchQuery}%,author.ilike.%${searchQuery}%,seller_name.ilike.%${searchQuery}%`);
+      }
+      
+      const { data, error } = await query;
+      
+      if (error) {
+        console.error('Error loading books:', error);
+        document.getElementById('booksGrid').innerHTML = `<div class="col-span-full text-center py-12 text-red-500">Error loading books: ${error.message}</div>`;
+        return;
+      }
+      
+      if (!data || data.length === 0) {
+        document.getElementById('booksGrid').innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <i class="fas fa-book-open text-4xl text-gray-300 mb-3"></i>
+            <p class="text-gray-500">No books found.</p>
+            ${currentUser ? '<p class="text-sm text-gray-400 mt-1">Be the first to <button onclick="showSellModal()" class="text-amber-700 underline">list a book</button></p>' : ''}
+          </div>
+        `;
+        updateStats(data || []);
+        return;
+      }
+      
+      renderBooks(data);
+      updateStats(data);
+    }
+
+    function renderBooks(books) {
+      const grid = document.getElementById('booksGrid');
+      
+      grid.innerHTML = books.map(book => `
+        <div class="book-card bg-white rounded-xl shadow-sm border overflow-hidden">
+          <div class="h-36 bg-gradient-to-r from-amber-50 to-orange-50 flex items-center justify-center">
+            <i class="fas fa-book-open text-4xl text-amber-600"></i>
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-lg mb-1 truncate">${escapeHtml(book.title)}</h3>
+            <p class="text-sm text-gray-600 mb-2">by ${escapeHtml(book.author)}</p>
+            <div class="flex items-center gap-2 mb-2 flex-wrap">
+              <span class="inline-block text-xs bg-gray-100 px-2 py-1 rounded">${book.genre}</span>
+              <span class="inline-block text-xs bg-green-100 text-green-700 px-2 py-1 rounded"><i class="fas fa-tag"></i> ₹${book.price}</span>
+            </div>
+            <p class="text-xs text-gray-500 mb-3">📖 ${escapeHtml(book.condition || 'Good condition')}</p>
+            <div class="flex items-center justify-between mt-2">
+              <div class="text-xs text-gray-400">
+                <i class="fas fa-user"></i> ${escapeHtml(book.seller_name)}
+              </div>
+              ${currentUser ? `
+                <a href="https://wa.me/91${book.seller_phone}?text=Hi! I'm interested in "${book.title}" listed on SecondTale. Price: ₹${book.price}" 
+                   target="_blank"
+                   class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-green-700 transition inline-flex items-center gap-1">
+                  <i class="fab fa-whatsapp"></i> Contact
+                </a>
+              ` : `
+                <button onclick="showLoginModal()" class="bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-gray-700 transition">
+                  Login to Contact
+                </button>
+              `}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateStats(books) {
+      if (!books) return;
       const uniqueSellers = new Set(books.map(b => b.seller_id)).size;
       document.getElementById('bookCount').innerText = books.length;
       document.getElementById('sellerCount').innerText = uniqueSellers;
     }
 
-    // ============ AUTH FUNCTIONS WITH REAL VALIDATION ============
+    // ============ AUTH FUNCTIONS ============
     function showLoginModal() {
       closeModals();
       document.getElementById('loginError').classList.add('hidden');
@@ -289,6 +334,10 @@
         alert('Please login or sign up to sell books');
         return;
       }
+      if (!currentUser.email_confirmed_at) {
+        alert('Please verify your email before selling books. Check your inbox!');
+        return;
+      }
       closeModals();
       document.getElementById('sellError').classList.add('hidden');
       document.getElementById('sellForm').reset();
@@ -303,48 +352,58 @@
       });
     }
 
-    function login() {
+    async function login() {
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
       const errorDiv = document.getElementById('loginError');
+      const loginBtn = document.getElementById('loginBtn');
       
-      // Validation
       if (!email || !password) {
         errorDiv.textContent = 'Please enter both email and password';
         errorDiv.classList.remove('hidden');
         return;
       }
       
-      if (!isValidEmail(email)) {
-        errorDiv.textContent = 'Please enter a valid email address (e.g., name@example.com)';
+      loginBtn.innerHTML = '<div class="loading-spinner"></div> Logging in...';
+      loginBtn.disabled = true;
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+      
+      loginBtn.innerHTML = 'Login';
+      loginBtn.disabled = false;
+      
+      if (error) {
+        if (error.message.includes('Email not confirmed')) {
+          errorDiv.textContent = 'Please verify your email first. Check your inbox for the verification link.';
+        } else {
+          errorDiv.textContent = error.message;
+        }
         errorDiv.classList.remove('hidden');
         return;
       }
       
-      // Find user
-      const user = users.find(u => u.email === email && u.password === password);
-      
-      if (user) {
-        currentUser = user;
-        saveSession();
-        updateUIBasedOnAuth();
+      if (data.user) {
+        currentUser = data.user;
+        currentSession = data.session;
         closeModals();
-        alert(`Welcome back, ${user.name}!`);
-        renderBooks();
-      } else {
-        errorDiv.textContent = 'Invalid email or password. Please check your credentials or sign up.';
-        errorDiv.classList.remove('hidden');
+        alert('Logged in successfully!');
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+        await checkSession();
       }
     }
 
-    function signup() {
+    async function signup() {
       const name = document.getElementById('signupName').value.trim();
       const email = document.getElementById('signupEmail').value.trim();
       const password = document.getElementById('signupPassword').value;
       const confirmPassword = document.getElementById('signupConfirmPassword').value;
       const errorDiv = document.getElementById('signupError');
+      const signupBtn = document.getElementById('signupBtn');
       
-      // Validation
       if (!name || !email || !password || !confirmPassword) {
         errorDiv.textContent = 'Please fill all fields';
         errorDiv.classList.remove('hidden');
@@ -353,12 +412,6 @@
       
       if (name.length < 2) {
         errorDiv.textContent = 'Name must be at least 2 characters';
-        errorDiv.classList.remove('hidden');
-        return;
-      }
-      
-      if (!isValidEmail(email)) {
-        errorDiv.textContent = 'Please enter a valid email address (e.g., name@example.com)';
         errorDiv.classList.remove('hidden');
         return;
       }
@@ -375,43 +428,67 @@
         return;
       }
       
-      // Check if email already exists
-      if (users.find(u => u.email === email)) {
-        errorDiv.textContent = 'Email already registered. Please login instead.';
+      signupBtn.innerHTML = '<div class="loading-spinner"></div> Creating account...';
+      signupBtn.disabled = true;
+      
+      const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: {
+            full_name: name,
+          }
+        }
+      });
+      
+      signupBtn.innerHTML = 'Sign Up';
+      signupBtn.disabled = false;
+      
+      if (error) {
+        errorDiv.textContent = error.message;
         errorDiv.classList.remove('hidden');
         return;
       }
       
-      // Create new user
-      const newUser = {
-        id: 'user_' + Date.now(),
-        name: name,
-        email: email,
-        password: password,
-        created_at: new Date().toISOString()
-      };
-      
-      users.push(newUser);
-      saveUsers();
-      
-      currentUser = newUser;
-      saveSession();
-      updateUIBasedOnAuth();
-      closeModals();
-      alert(`Welcome to SecondTale, ${name}! You can now list books for sale.`);
-      renderBooks();
+      if (data.user) {
+        closeModals();
+        document.getElementById('verifyEmailAddress').innerText = email;
+        document.getElementById('verifyModal').classList.remove('hidden');
+        document.getElementById('verifyModal').classList.add('flex');
+        
+        document.getElementById('signupName').value = '';
+        document.getElementById('signupEmail').value = '';
+        document.getElementById('signupPassword').value = '';
+        document.getElementById('signupConfirmPassword').value = '';
+      }
     }
 
-    function logout() {
+    async function resendVerification() {
+      const email = document.getElementById('verifyEmailAddress').innerText;
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email
+      });
+      
+      if (error) {
+        alert('Error: ' + error.message);
+      } else {
+        alert('Verification email resent! Please check your inbox.');
+      }
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
       currentUser = null;
-      saveSession();
-      updateUIBasedOnAuth();
-      renderBooks();
+      currentSession = null;
+      document.getElementById('authButtons').classList.remove('hidden');
+      document.getElementById('userMenu').classList.add('hidden');
       alert('Logged out successfully');
+      await loadBooks();
     }
 
     // ============ BOOK FUNCTIONS ============
-    function publishBook() {
+    async function publishBook() {
       if (!currentUser) {
         showLoginModal();
         return;
@@ -424,8 +501,8 @@
       const sellerPhone = document.getElementById('sellerPhone').value.trim();
       const condition = document.getElementById('bookCondition').value.trim();
       const errorDiv = document.getElementById('sellError');
+      const publishBtn = document.getElementById('publishBtn');
       
-      // Validation
       if (!title || !author || !price || !sellerPhone) {
         errorDiv.textContent = 'Please fill all required fields (*)';
         errorDiv.classList.remove('hidden');
@@ -444,94 +521,40 @@
         return;
       }
       
-      if (!isValidPhone(sellerPhone)) {
+      if (!/^[0-9]{10}$/.test(sellerPhone)) {
         errorDiv.textContent = 'Please enter a valid 10-digit phone number';
         errorDiv.classList.remove('hidden');
         return;
       }
       
-      const newBook = {
-        id: Date.now(),
+      publishBtn.innerHTML = '<div class="loading-spinner"></div> Publishing...';
+      publishBtn.disabled = true;
+      
+      const { data, error } = await supabase.from('books').insert([{
         title: title,
         author: author,
         genre: genre,
         price: price,
         condition: condition || 'Good condition',
-        seller_name: currentUser.name,
-        seller_phone: sellerPhone,
+        seller_name: currentUser.user_metadata?.full_name || currentUser.email.split('@')[0],
         seller_id: currentUser.id,
+        seller_phone: sellerPhone,
         created_at: new Date().toISOString()
-      };
+      }]);
       
-      books.unshift(newBook);
-      saveBooks();
-      renderBooks();
-      updateStats();
-      closeModals();
-      alert('Your book has been listed successfully! Buyers can now contact you via WhatsApp.');
-    }
-
-    function renderBooks() {
-      let filtered = [...books];
+      publishBtn.innerHTML = 'Publish Listing';
+      publishBtn.disabled = false;
       
-      if (currentGenre !== 'all') {
-        filtered = filtered.filter(book => book.genre === currentGenre);
-      }
-      
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        filtered = filtered.filter(book => 
-          book.title.toLowerCase().includes(query) ||
-          book.author.toLowerCase().includes(query) ||
-          book.seller_name.toLowerCase().includes(query)
-        );
-      }
-      
-      const grid = document.getElementById('booksGrid');
-      
-      if (filtered.length === 0) {
-        grid.innerHTML = `
-          <div class="col-span-full text-center py-12">
-            <i class="fas fa-book-open text-4xl text-gray-300 mb-3"></i>
-            <p class="text-gray-500">No books found matching your criteria.</p>
-            <p class="text-sm text-gray-400 mt-1">Be the first to <button onclick="showSellModal()" class="text-amber-700 underline">list a book</button></p>
-          </div>
-        `;
+      if (error) {
+        errorDiv.textContent = error.message;
+        errorDiv.classList.remove('hidden');
         return;
       }
       
-      grid.innerHTML = filtered.map(book => `
-        <div class="book-card bg-white rounded-xl shadow-sm border overflow-hidden">
-          <div class="h-36 bg-gradient-to-r from-amber-50 to-orange-50 flex items-center justify-center">
-            <i class="fas fa-book-open text-4xl text-amber-600"></i>
-          </div>
-          <div class="p-4">
-            <h3 class="font-bold text-lg mb-1 truncate">${escapeHtml(book.title)}</h3>
-            <p class="text-sm text-gray-600 mb-2">by ${escapeHtml(book.author)}</p>
-            <div class="flex items-center gap-2 mb-2 flex-wrap">
-              <span class="inline-block text-xs bg-gray-100 px-2 py-1 rounded">${book.genre}</span>
-              <span class="inline-block text-xs bg-green-100 text-green-700 px-2 py-1 rounded"><i class="fas fa-tag"></i> ₹${book.price}</span>
-            </div>
-            <p class="text-xs text-gray-500 mb-3 line-clamp-2">📖 ${escapeHtml(book.condition)}</p>
-            <div class="flex items-center justify-between mt-2">
-              <div class="text-xs text-gray-400">
-                <i class="fas fa-user"></i> ${escapeHtml(book.seller_name)}
-              </div>
-              ${currentUser ? `
-                <a href="https://wa.me/91${book.seller_phone}?text=Hi! I'm interested in "${book.title}" listed on SecondTale. Price: ₹${book.price}" 
-                   target="_blank"
-                   class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-green-700 transition inline-flex items-center gap-1">
-                  <i class="fab fa-whatsapp"></i> Contact
-                </a>
-              ` : `
-                <button onclick="showLoginModal()" class="bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-gray-700 transition">
-                  Login to Contact
-                </button>
-              `}
-            </div>
-          </div>
-        </div>
-      `).join('');
+      closeModals();
+      document.getElementById('sellForm').reset();
+      alert('Your book has been listed successfully! Buyers can now contact you via WhatsApp.');
+      await loadBooks();
     }
 
     function escapeHtml(str) {
@@ -554,16 +577,15 @@
         this.classList.add('bg-amber-700', 'text-white');
         this.classList.remove('bg-gray-200', 'text-gray-700');
         currentGenre = this.dataset.genre;
-        renderBooks();
+        loadBooks();
       });
     });
 
     document.getElementById('searchInput')?.addEventListener('input', (e) => {
       searchQuery = e.target.value;
-      renderBooks();
+      loadBooks();
     });
 
-    // Close modals when clicking outside
     window.onclick = function(event) {
       if (event.target.classList && event.target.classList.contains('modal')) {
         closeModals();
@@ -571,7 +593,7 @@
     };
 
     // Initialize
-    loadData();
+    checkSession();
   </script>
 </body>
 </html>
