@@ -9,7 +9,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
     .container { max-width: 1200px; margin: 0 auto; }
-    .header { background: white; padding: 15px 20px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .header { background: white; padding: 15px 20px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
     .logo { font-size: 24px; font-weight: bold; color: #d97706; }
     button { padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; }
     .btn-primary { background: #d97706; color: white; }
@@ -116,16 +116,16 @@
   const SUPABASE_URL = 'https://vhdziqbrhwmjelextecs.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZHppcWJyaHdtamVsZXh0ZWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNTMyMTcsImV4cCI6MjA5MzgyOTIxN30.irxpciK3YgA8Kdze8e1adWgCJos99NRCgQxzWmkSEFc';
 
-  let supabase;
+  let supabaseClient = null;
   let currentUser = null;
 
   // INITIALIZE
   async function init() {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     console.log('Supabase initialized');
     
     // Check if user is logged in
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) {
       currentUser = session.user;
       document.getElementById('authSection').classList.add('hidden');
@@ -146,7 +146,7 @@
     
     const search = document.getElementById('searchInput').value;
     
-    let query = supabase.from('books').select('*').order('created_at', { ascending: false });
+    let query = supabaseClient.from('books').select('*').order('created_at', { ascending: false });
     
     if (search) {
       query = query.or(`title.ilike.%${search}%,author.ilike.%${search}%`);
@@ -229,7 +229,7 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
     
     errorDiv.innerHTML = '';
     
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     
     if (error) {
       errorDiv.innerHTML = error.message;
@@ -262,7 +262,7 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
       return;
     }
     
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await supabaseClient.auth.signUp({
       email,
       password,
       options: { data: { full_name: name, phone } }
@@ -305,7 +305,7 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
     // Get user's phone or use default
     const phone = currentUser.user_metadata?.phone || '';
     
-    const { error } = await supabase.from('books').insert([{
+    const { error } = await supabaseClient.from('books').insert([{
       title,
       author,
       genre,
@@ -335,7 +335,7 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
 
   // LOGOUT
   async function logout() {
-    await supabase.auth.signOut();
+    await supabaseClient.auth.signOut();
     currentUser = null;
     document.getElementById('authSection').classList.remove('hidden');
     document.getElementById('userSection').classList.add('hidden');
