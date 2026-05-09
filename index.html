@@ -299,12 +299,6 @@
       color: #d97706;
     }
     
-    .book-cover img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
     .book-info {
       padding: 1rem;
     }
@@ -484,14 +478,14 @@
       
       <div class="flex gap-3">
         <div id="authButtons" class="flex gap-3">
-          <button class="btn-outline" onclick="window.showLoginModal()">Login</button>
-          <button class="btn-primary" onclick="window.showSignupModal()">Sign Up</button>
+          <button class="btn-outline" id="showLoginBtn">Login</button>
+          <button class="btn-primary" id="showSignupBtn">Sign Up</button>
         </div>
         <div id="userMenu" class="hidden flex gap-3" style="align-items: center;">
           <span id="userName" class="text-sm"></span>
-          <button class="btn-outline" onclick="window.showMyListings()"><i class="fas fa-list"></i> My Books</button>
-          <button class="btn-outline" onclick="window.showProfile()"><i class="fas fa-user"></i> Profile</button>
-          <button class="btn-outline" onclick="window.logout()" style="border-color: #dc2626; color: #dc2626;">Logout</button>
+          <button class="btn-outline" id="showMyListingsBtn"><i class="fas fa-list"></i> My Books</button>
+          <button class="btn-outline" id="showProfileBtn"><i class="fas fa-user"></i> Profile</button>
+          <button class="btn-outline" id="logoutBtn" style="border-color: #dc2626; color: #dc2626;">Logout</button>
         </div>
       </div>
     </div>
@@ -500,9 +494,9 @@
   <div class="container">
     <!-- Tabs -->
     <div class="tabs">
-      <div class="tab active" onclick="window.switchTab('browse')">📚 Browse Books</div>
-      <div id="myListingsTab" class="tab hidden" onclick="window.switchTab('mylistings')">📖 My Listings</div>
-      <div id="profileTab" class="tab hidden" onclick="window.switchTab('profile')">👤 My Profile</div>
+      <div class="tab active" id="browseTab">📚 Browse Books</div>
+      <div id="myListingsTab" class="tab hidden" id="myListingsTabBtn">📖 My Listings</div>
+      <div id="profileTab" class="tab hidden" id="profileTabBtn">👤 My Profile</div>
     </div>
 
     <!-- Browse Section -->
@@ -510,7 +504,7 @@
       <div class="hero">
         <h1>Buy & Sell Used Books</h1>
         <p>Connect with book lovers across India. Direct WhatsApp contact with sellers.</p>
-        <button class="btn-primary" id="sellBtn" onclick="window.showSellModal()" style="display: none; padding: 0.75rem 1.5rem;">
+        <button class="btn-primary" id="sellBtn" style="display: none; padding: 0.75rem 1.5rem;">
           <i class="fas fa-plus-circle"></i> Sell Your Book
         </button>
       </div>
@@ -565,7 +559,7 @@
         <p id="profileEmail"></p>
         <p><i class="fas fa-map-marker-alt"></i> <span id="profileCity">Not set</span></p>
         <p><i class="fas fa-phone"></i> <span id="profilePhone">Not set</span></p>
-        <button class="btn-primary" onclick="window.showEditProfile()">Edit Profile</button>
+        <button class="btn-primary" id="editProfileBtn">Edit Profile</button>
       </div>
       <div class="stats">
         <h3>📊 My Stats</h3>
@@ -582,9 +576,9 @@
       <input type="email" id="loginEmail" placeholder="Email address">
       <input type="password" id="loginPassword" placeholder="Password">
       <button class="btn-primary" id="loginBtn" style="width: 100%; margin-bottom: 0.75rem;">Login</button>
-      <button class="btn-outline" onclick="window.closeModals()" style="width: 100%;">Cancel</button>
+      <button class="btn-outline" onclick="closeModals()" style="width: 100%;">Cancel</button>
       <p class="text-center text-sm" style="margin-top: 0.75rem;">
-        Don't have an account? <a href="#" onclick="window.showSignupModal(); return false;" style="color: #d97706;">Sign up</a>
+        Don't have an account? <a href="#" onclick="showSignupModal(); return false;" style="color: #d97706;">Sign up</a>
       </p>
     </div>
   </div>
@@ -602,7 +596,7 @@
       <input type="tel" id="signupPhone" placeholder="Phone Number">
       <p class="text-sm text-gray-500" style="margin-bottom: 0.75rem;">Password must be at least 6 characters</p>
       <button class="btn-primary" id="signupBtn" style="width: 100%; margin-bottom: 0.75rem;">Sign Up</button>
-      <button class="btn-outline" onclick="window.closeModals()" style="width: 100%;">Cancel</button>
+      <button class="btn-outline" onclick="closeModals()" style="width: 100%;">Cancel</button>
     </div>
   </div>
 
@@ -627,7 +621,7 @@
       <textarea id="bookCondition" rows="3" placeholder="Condition (e.g., Like new, few highlights)"></textarea>
       <div class="flex gap-3">
         <button class="btn-primary" id="publishBtn" style="flex: 1;">Publish Listing</button>
-        <button class="btn-outline" onclick="window.closeModals()" style="flex: 1;">Cancel</button>
+        <button class="btn-outline" onclick="closeModals()" style="flex: 1;">Cancel</button>
       </div>
     </div>
   </div>
@@ -641,7 +635,7 @@
       <input type="number" id="offerAmount" placeholder="Your offer amount (₹)">
       <textarea id="offerMessage" rows="2" placeholder="Message to seller (optional)"></textarea>
       <button class="btn-primary" id="sendOfferBtn" style="width: 100%;">Send Offer via WhatsApp</button>
-      <button class="btn-outline" onclick="window.closeModals()" style="width: 100%; margin-top: 0.5rem;">Cancel</button>
+      <button class="btn-outline" onclick="closeModals()" style="width: 100%; margin-top: 0.5rem;">Cancel</button>
     </div>
   </div>
 
@@ -654,7 +648,7 @@
       <input type="tel" id="editPhone" placeholder="Phone Number">
       <div class="flex gap-3">
         <button class="btn-primary" id="saveProfileBtn" style="flex: 1;">Save</button>
-        <button class="btn-outline" onclick="window.closeModals()" style="flex: 1;">Cancel</button>
+        <button class="btn-outline" onclick="closeModals()" style="flex: 1;">Cancel</button>
       </div>
     </div>
   </div>
@@ -745,55 +739,6 @@
       
       if (error) {
         console.error('Error:', error);
-        
-        if (error.message.includes('relation') && error.message.includes('does not exist')) {
-          document.getElementById('booksGrid').innerHTML = `
-            <div class="text-center" style="grid-column: 1/-1; padding: 3rem;">
-              <i class="fas fa-database" style="font-size: 2rem; color: #d97706;"></i>
-              <p style="margin-top: 0.5rem;"><strong>Database table not found</strong></p>
-              <p class="text-sm text-gray-500" style="margin-top: 0.5rem;">Please run this SQL in your Supabase SQL Editor:</p>
-              <pre style="background: #1f2937; color: #e5e7eb; padding: 1rem; border-radius: 0.5rem; margin-top: 0.5rem; font-size: 0.75rem; text-align: left; overflow-x: auto;">
-CREATE TABLE books (
-  id BIGSERIAL PRIMARY KEY,
-  title TEXT NOT NULL,
-  author TEXT NOT NULL,
-  genre TEXT NOT NULL,
-  price INT NOT NULL,
-  condition TEXT,
-  seller_name TEXT NOT NULL,
-  seller_id UUID,
-  seller_phone TEXT,
-  location TEXT,
-  status TEXT DEFAULT 'available',
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
-ALTER TABLE books ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Anyone can view books" ON books FOR SELECT USING (true);
-CREATE POLICY "Users can insert books" ON books FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-
-CREATE TABLE profiles (
-  id UUID PRIMARY KEY REFERENCES auth.users(id),
-  full_name TEXT,
-  city TEXT,
-  phone TEXT,
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users can view profiles" ON profiles FOR SELECT USING (true);
-CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
-
-INSERT INTO books (title, author, genre, price, condition, seller_name, seller_phone, location) VALUES
-('The Silent Patient', 'Alex Michaelides', 'Mystery', 350, 'Like new', 'Rahul Sharma', '9876543210', 'Mumbai'),
-('Atomic Habits', 'James Clear', 'Self-Help', 280, 'Good condition', 'Priya Verma', '9876543211', 'Delhi');
-              </pre>
-            </div>
-          `;
-          return;
-        }
-        
         document.getElementById('booksGrid').innerHTML = `<div class="text-center" style="grid-column: 1/-1; padding: 3rem; color: #dc2626;">Error: ${error.message}</div>`;
         return;
       }
@@ -854,12 +799,12 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
                      target="_blank" class="btn-green" style="flex:1; text-decoration:none; text-align:center;">
                     <i class="fab fa-whatsapp"></i> Contact
                   </a>
-                  <button onclick="window.showOfferModal(${book.id}, '${escapeHtml(book.title)}', ${book.price}, '${book.seller_phone}')" class="btn-outline" style="flex:1;">
+                  <button onclick="showOfferModal(${book.id}, '${escapeHtml(book.title)}', ${book.price}, '${book.seller_phone}')" class="btn-outline" style="flex:1;">
                     💬 Make Offer
                   </button>
                 </div>
               ` : currentUser && book.seller_id === currentUser.id ? '' : `
-                <button class="btn-gray" onclick="window.showLoginModal()" style="width:100%;">
+                <button class="btn-gray" onclick="showLoginModal()" style="width:100%;">
                   Login to Contact
                 </button>
               `}
@@ -886,4 +831,336 @@ INSERT INTO books (title, author, genre, price, condition, seller_name, seller_p
             </div>
             <p class="book-condition">📖 ${escapeHtml(book.condition || 'Good condition')}</p>
             <p class="text-sm">Status: ${book.status === 'sold' ? 'SOLD' : 'Available'}</p>
-            <div class="flex gap-2
+            <div class="flex gap-2" style="margin-top: 0.75rem;">
+              ${book.status !== 'sold' ? `<button onclick="markAsSold(${book.id})" class="btn-green" style="flex:1;">✓ Mark as Sold</button>` : ''}
+              <button onclick="deleteBook(${book.id})" class="btn-red" style="flex:1;">🗑 Delete</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Auth functions
+    async function login() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const errorDiv = document.getElementById('loginError');
+      const loginBtn = document.getElementById('loginBtn');
+      
+      errorDiv.style.display = 'none';
+      
+      if (!email || !password) {
+        errorDiv.textContent = 'Please enter both email and password';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      loginBtn.innerHTML = '<div class="loading-spinner"></div> Logging in...';
+      loginBtn.disabled = true;
+      
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      
+      loginBtn.innerHTML = 'Login';
+      loginBtn.disabled = false;
+      
+      if (error) {
+        errorDiv.textContent = error.message;
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      if (data.user) {
+        currentUser = data.user;
+        closeModals();
+        alert('✅ Logged in successfully!');
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+        await checkSession();
+      }
+    }
+
+    async function signup() {
+      const name = document.getElementById('signupName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      const confirmPassword = document.getElementById('signupConfirmPassword').value;
+      const city = document.getElementById('signupCity').value.trim();
+      const phone = document.getElementById('signupPhone').value.trim();
+      const errorDiv = document.getElementById('signupError');
+      const signupBtn = document.getElementById('signupBtn');
+      
+      errorDiv.style.display = 'none';
+      
+      if (!name || !email || !password) {
+        errorDiv.textContent = 'Please fill all fields';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      if (password.length < 6) {
+        errorDiv.textContent = 'Password must be at least 6 characters';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        errorDiv.textContent = 'Passwords do not match';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      signupBtn.innerHTML = '<div class="loading-spinner"></div> Creating account...';
+      signupBtn.disabled = true;
+      
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: name, city, phone } }
+      });
+      
+      signupBtn.innerHTML = 'Sign Up';
+      signupBtn.disabled = false;
+      
+      if (error) {
+        errorDiv.textContent = error.message;
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      if (data.user) {
+        // Create profile record
+        await supabaseClient.from('profiles').upsert({
+          id: data.user.id,
+          full_name: name,
+          city: city,
+          phone: phone
+        });
+        
+        closeModals();
+        alert(`✅ Account created! Please check ${email} for verification link.`);
+        document.getElementById('signupName').value = '';
+        document.getElementById('signupEmail').value = '';
+        document.getElementById('signupPassword').value = '';
+        document.getElementById('signupConfirmPassword').value = '';
+        document.getElementById('signupCity').value = '';
+        document.getElementById('signupPhone').value = '';
+      }
+    }
+
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      currentUser = null;
+      await checkSession();
+      alert('Logged out');
+    }
+
+    // Book functions
+    async function publishBook() {
+      if (!currentUser) {
+        showLoginModal();
+        return;
+      }
+      
+      const title = document.getElementById('bookTitle').value.trim();
+      const author = document.getElementById('bookAuthor').value.trim();
+      const genre = document.getElementById('bookGenre').value;
+      const price = parseInt(document.getElementById('bookPrice').value);
+      const location = document.getElementById('bookLocation').value.trim();
+      const sellerPhone = document.getElementById('sellerPhone').value.trim();
+      const condition = document.getElementById('bookCondition').value.trim();
+      const errorDiv = document.getElementById('sellError');
+      const publishBtn = document.getElementById('publishBtn');
+      
+      errorDiv.style.display = 'none';
+      
+      if (!title || !author || !price || !sellerPhone) {
+        errorDiv.textContent = 'Please fill all required fields';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      if (!/^[0-9]{10}$/.test(sellerPhone)) {
+        errorDiv.textContent = 'Please enter a valid 10-digit phone number';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      publishBtn.innerHTML = '<div class="loading-spinner"></div> Publishing...';
+      publishBtn.disabled = true;
+      
+      const { error } = await supabaseClient.from('books').insert([{
+        title, author, genre, price, location,
+        condition: condition || 'Good condition',
+        seller_name: currentUser.user_metadata?.full_name || currentUser.email.split('@')[0],
+        seller_id: currentUser.id,
+        seller_phone: sellerPhone,
+        status: 'available',
+        created_at: new Date().toISOString()
+      }]);
+      
+      publishBtn.innerHTML = 'Publish Listing';
+      publishBtn.disabled = false;
+      
+      if (error) {
+        errorDiv.textContent = error.message;
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      closeModals();
+      document.getElementById('bookTitle').value = '';
+      document.getElementById('bookAuthor').value = '';
+      document.getElementById('bookPrice').value = '';
+      document.getElementById('bookLocation').value = '';
+      document.getElementById('sellerPhone').value = '';
+      document.getElementById('bookCondition').value = '';
+      alert('✅ Book listed successfully!');
+      await loadBooks();
+    }
+
+    async function markAsSold(bookId) {
+      await supabaseClient.from('books').update({ status: 'sold' }).eq('id', bookId);
+      alert('✅ Marked as sold!');
+      loadMyListings();
+      loadBooks();
+    }
+
+    async function deleteBook(bookId) {
+      if (confirm('Delete this listing?')) {
+        await supabaseClient.from('books').delete().eq('id', bookId);
+        loadMyListings();
+        loadBooks();
+      }
+    }
+
+    async function updateProfile() {
+      const full_name = document.getElementById('editName').value;
+      const city = document.getElementById('editCity').value;
+      const phone = document.getElementById('editPhone').value;
+      
+      await supabaseClient.from('profiles').upsert({ id: currentUser.id, full_name, city, phone, updated_at: new Date() });
+      await supabaseClient.auth.updateUser({ data: { full_name } });
+      alert('✅ Profile updated!');
+      closeModals();
+      await loadUserProfile();
+    }
+
+    function showOfferModal(bookId, title, price, sellerPhone) {
+      currentOfferBook = { title, price, sellerPhone };
+      document.getElementById('offerBookTitle').innerText = title;
+      document.getElementById('offerBookPrice').innerText = price;
+      document.getElementById('offerModal').classList.add('show');
+    }
+
+    function sendOffer() {
+      const offerAmount = document.getElementById('offerAmount').value;
+      const message = document.getElementById('offerMessage').value;
+      const text = `Hi! I'd like to offer ₹${offerAmount} for "${currentOfferBook.title}" (listed at ₹${currentOfferBook.price}). ${message ? 'Message: ' + message : ''}`;
+      window.open(`https://wa.me/91${currentOfferBook.sellerPhone}?text=${encodeURIComponent(text)}`, '_blank');
+      closeModals();
+    }
+
+    // UI functions
+    function showLoginModal() { closeModals(); document.getElementById('loginModal').classList.add('show'); }
+    function showSignupModal() { closeModals(); document.getElementById('signupModal').classList.add('show'); }
+    function showSellModal() {
+      if (!currentUser) { showLoginModal(); return; }
+      closeModals(); document.getElementById('sellModal').classList.add('show');
+    }
+    function showMyListings() { switchTab('mylistings'); }
+    function showProfile() { switchTab('profile'); }
+    function showEditProfile() { document.getElementById('editProfileModal').classList.add('show'); }
+    function closeModals() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('show')); }
+    
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('browseSection').classList.add('hidden');
+      document.getElementById('myListingsSection').classList.add('hidden');
+      document.getElementById('profileSection').classList.add('hidden');
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      
+      if (tab === 'browse') {
+        document.getElementById('browseSection').classList.remove('hidden');
+        document.getElementById('browseTab').classList.add('active');
+        loadBooks();
+      } else if (tab === 'mylistings') {
+        document.getElementById('myListingsSection').classList.remove('hidden');
+        document.getElementById('myListingsTab').classList.add('active');
+        loadMyListings();
+      } else if (tab === 'profile') {
+        document.getElementById('profileSection').classList.remove('hidden');
+        document.getElementById('profileTab').classList.add('active');
+        loadUserProfile();
+        loadMyListings();
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
+
+    // Set up event listeners
+    function setupEventListeners() {
+      document.getElementById('showLoginBtn').onclick = showLoginModal;
+      document.getElementById('showSignupBtn').onclick = showSignupModal;
+      document.getElementById('logoutBtn').onclick = logout;
+      document.getElementById('showMyListingsBtn').onclick = showMyListings;
+      document.getElementById('showProfileBtn').onclick = showProfile;
+      document.getElementById('sellBtn').onclick = showSellModal;
+      document.getElementById('loginBtn').onclick = login;
+      document.getElementById('signupBtn').onclick = signup;
+      document.getElementById('publishBtn').onclick = publishBook;
+      document.getElementById('sendOfferBtn').onclick = sendOffer;
+      document.getElementById('saveProfileBtn').onclick = updateProfile;
+      document.getElementById('editProfileBtn').onclick = showEditProfile;
+      document.getElementById('browseTab').onclick = () => switchTab('browse');
+      document.getElementById('myListingsTab').onclick = () => switchTab('mylistings');
+      document.getElementById('profileTab').onclick = () => switchTab('profile');
+      
+      document.querySelectorAll('.genre-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentGenre = this.dataset.genre;
+          loadBooks();
+        });
+      });
+      
+      document.getElementById('searchInput').addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        loadBooks();
+      });
+      
+      document.getElementById('locationFilter').addEventListener('input', () => loadBooks());
+      document.getElementById('statusFilter').addEventListener('change', () => loadBooks());
+      
+      window.onclick = (e) => { if (e.target.classList && e.target.classList.contains('modal')) closeModals(); };
+    }
+
+    // Make functions global for onclick handlers
+    window.showLoginModal = showLoginModal;
+    window.showSignupModal = showSignupModal;
+    window.showSellModal = showSellModal;
+    window.showMyListings = showMyListings;
+    window.showProfile = showProfile;
+    window.showOfferModal = showOfferModal;
+    window.logout = logout;
+    window.markAsSold = markAsSold;
+    window.deleteBook = deleteBook;
+    window.closeModals = closeModals;
+    window.switchTab = switchTab;
+    window.showEditProfile = showEditProfile;
+
+    // Start
+    initSupabase();
+    setupEventListeners();
+    checkSession();
+  </script>
+</body>
+</html>
