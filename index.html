@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Second Tale | Buy & Sell Used Books with Chat & Photos</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -25,7 +25,6 @@
     .btn-primary:hover { background: #b45309; }
     .btn-green { background: #16a34a; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 0.5rem; border: none; cursor: pointer; }
     .btn-green:hover { background: #15803d; }
-    .btn-gray { background: #4b5563; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 0.875rem; }
     .btn-red { background: #dc2626; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; }
     .btn-red:hover { background: #b91c1c; }
     .btn-save { background: #8b5cf6; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; }
@@ -57,7 +56,7 @@
     .genre-btn.active { background: #d97706; color: white; }
     
     .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; }
-    .tab { padding: 0.75rem 1.5rem; cursor: pointer; border-bottom: 2px solid transparent; position: relative; }
+    .tab { padding: 0.75rem 1.5rem; cursor: pointer; border-bottom: 2px solid transparent; }
     .tab.active { border-bottom-color: #d97706; color: #d97706; font-weight: 600; }
     
     .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
@@ -76,7 +75,6 @@
     .seller-name { font-size: 0.75rem; color: #9ca3af; margin-top: 0.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
     .action-buttons { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
     
-    /* Chat Panel */
     .chat-panel { position: fixed; bottom: 0; right: 20px; width: 350px; background: white; border-radius: 12px 12px 0 0; box-shadow: 0 -4px 12px rgba(0,0,0,0.15); z-index: 1000; display: none; flex-direction: column; }
     .chat-header { background: #d97706; color: white; padding: 12px 16px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; }
     .chat-messages { height: 350px; overflow-y: auto; padding: 12px; background: #f9fafb; }
@@ -87,10 +85,9 @@
     .chat-message.sent .message-bubble { background: #d97706; color: white; }
     .chat-message.received .message-bubble { background: white; border: 1px solid #e5e7eb; }
     .message-time { font-size: 0.7rem; color: #9ca3af; margin-top: 4px; }
-    .chat-input-area { display: flex; padding: 12px; border-top: 1px solid #e5e7eb; background: white; border-radius: 0 0 12px 12px; }
+    .chat-input-area { display: flex; padding: 12px; border-top: 1px solid #e5e7eb; background: white; }
     .chat-input-area input { flex: 1; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 20px; outline: none; }
-    .chat-input-area button { margin-left: 8px; padding: 8px 16px; }
-    .chat-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 0.7rem; border-radius: 50%; padding: 2px 6px; min-width: 18px; text-align: center; }
+    .chat-badge { background: #ef4444; color: white; font-size: 0.7rem; border-radius: 50%; padding: 2px 6px; min-width: 18px; text-align: center; display: inline-block; margin-left: 5px; }
     .chat-conversation { padding: 12px; border-bottom: 1px solid #e5e7eb; cursor: pointer; }
     .chat-conversation:hover { background: #f3f4f6; }
     
@@ -131,8 +128,8 @@
         <button class="btn-primary" id="showSignupBtn">Sign Up</button>
       </div>
       <div id="userMenu" class="hidden flex gap-3" style="align-items: center; flex-wrap: wrap;">
-        <span id="userName" class="text-sm"></span>
-        <button class="btn-outline" id="showChatsBtn"><i class="fas fa-comments"></i> Chats <span id="chatUnreadBadge" class="chat-badge" style="display:none; position:static; margin-left:5px;">0</span></button>
+        <span id="userName"></span>
+        <button class="btn-outline" id="showChatsBtn"><i class="fas fa-comments"></i> Chats <span id="chatUnreadBadge" class="chat-badge" style="display:none;">0</span></button>
         <button class="btn-outline" id="showSavedBtn"><i class="fas fa-heart"></i> Saved</button>
         <button class="btn-outline" id="showMyListingsBtn"><i class="fas fa-list"></i> My Books</button>
         <button class="btn-outline" id="showProfileBtn"><i class="fas fa-user"></i> Profile</button>
@@ -145,9 +142,9 @@
 <div class="container">
   <div class="tabs">
     <div class="tab active" id="browseTab">📚 Browse Books</div>
-    <div id="savedTab" class="tab hidden">❤️ Saved Books</div>
-    <div id="myListingsTab" class="tab hidden">📖 My Listings</div>
-    <div id="profileTab" class="tab hidden">👤 My Profile</div>
+    <div id="savedTab" class="tab hidden">❤️ Saved</div>
+    <div id="myListingsTab" class="tab hidden">📖 My Books</div>
+    <div id="profileTab" class="tab hidden">👤 Profile</div>
     <div id="chatsTab" class="tab hidden">💬 Messages</div>
   </div>
 
@@ -155,14 +152,17 @@
     <div class="hero">
       <h1>Buy & Sell Used Books</h1>
       <p>Chat with sellers. Share books. Add multiple photos!</p>
-      <button class="btn-primary" id="sellBtn" style="display: none; padding: 0.75rem 1.5rem;"><i class="fas fa-plus-circle"></i> Sell Your Book</button>
+      <button class="btn-primary" id="sellBtn" style="display: none;"><i class="fas fa-plus-circle"></i> Sell Your Book</button>
     </div>
     <div class="stats"><div><i class="fas fa-book"></i> <span id="bookCount">0</span> books</div><div><i class="fas fa-users"></i> <span id="sellerCount">0</span> sellers</div></div>
     <div class="filters">
       <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Search..."></div>
       <div class="filter-row"><input type="text" id="locationFilter" placeholder="City..."><select id="statusFilter"><option value="all">All</option><option value="available">Available</option></select></div>
       <div class="genre-buttons" id="genreContainer">
-        <button class="genre-btn active" data-genre="all">All</button><button class="genre-btn" data-genre="Fiction">Fiction</button><button class="genre-btn" data-genre="Classic">Classic</button><button class="genre-btn" data-genre="Mystery">Mystery</button><button class="genre-btn" data-genre="Sci-Fi">Sci-Fi</button><button class="genre-btn" data-genre="Romance">Romance</button><button class="genre-btn" data-genre="Self-Help">Self-Help</button>
+        <button class="genre-btn active" data-genre="all">All</button><button class="genre-btn" data-genre="Fiction">Fiction</button>
+        <button class="genre-btn" data-genre="Classic">Classic</button><button class="genre-btn" data-genre="Mystery">Mystery</button>
+        <button class="genre-btn" data-genre="Sci-Fi">Sci-Fi</button><button class="genre-btn" data-genre="Romance">Romance</button>
+        <button class="genre-btn" data-genre="Self-Help">Self-Help</button>
       </div>
     </div>
     <div id="booksGrid" class="books-grid"><div class="text-center" style="grid-column:1/-1;padding:3rem;"><div class="loading-spinner"></div><p>Loading books...</p></div></div>
@@ -171,10 +171,10 @@
   <div id="savedSection" class="hidden"><h2>❤️ Saved Books</h2><div id="savedGrid" class="books-grid"></div></div>
   <div id="myListingsSection" class="hidden"><h2>📖 My Books</h2><div id="myListingsGrid" class="books-grid"></div></div>
   <div id="profileSection" class="hidden">
-    <div class="profile-section"><div class="avatar" id="userAvatar">👤</div><h3 id="profileName"></h3><p id="profileEmail"></p><p><i class="fas fa-map-marker-alt"></i> <span id="profileCity">Not set</span></p><p><i class="fas fa-phone"></i> <span id="profilePhone">Not set</span></p><p><i class="fas fa-star"></i> Rating: <span id="profileRating">0</span> (<span id="profileReviewCount">0</span> reviews)</p><button class="btn-primary" id="editProfileBtn">Edit Profile</button></div>
-    <div class="stats"><h3>📊 My Stats</h3><p>Books Listed: <span id="userBookCount">0</span></p><p>Saved: <span id="userSavedCount">0</span></p></div>
+    <div class="profile-section"><div class="avatar" id="userAvatar">👤</div><h3 id="profileName"></h3><p id="profileEmail"></p><p>📍 <span id="profileCity">Not set</span></p><p>📱 <span id="profilePhone">Not set</span></p><p>⭐ Rating: <span id="profileRating">0</span> (<span id="profileReviewCount">0</span>)</p><button class="btn-primary" id="editProfileBtn">Edit Profile</button></div>
+    <div class="stats"><h3>My Stats</h3><p>Books Listed: <span id="userBookCount">0</span></p><p>Saved: <span id="userSavedCount">0</span></p></div>
   </div>
-  <div id="chatsSection" class="hidden"><h2>💬 Conversations</h2><div id="conversationsList" style="background:white; border-radius:0.75rem; overflow:hidden;"></div></div>
+  <div id="chatsSection" class="hidden"><h2>💬 Conversations</h2><div id="conversationsList" style="background:white; border-radius:12px; overflow:hidden;"></div></div>
 </div>
 
 <div id="chatPanel" class="chat-panel">
@@ -184,22 +184,17 @@
 </div>
 
 <!-- Modals -->
-<div id="loginModal" class="modal"><div class="modal-content"><h2>Welcome Back</h2><div id="loginError" class="error-msg"></div><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPassword" placeholder="Password"><button class="btn-primary" id="loginBtn">Login</button><button class="btn-outline" onclick="closeModals()">Cancel</button></div></div>
-<div id="signupModal" class="modal"><div class="modal-content"><h2>Create Account</h2><div id="signupError" class="error-msg"></div><input type="text" id="signupName" placeholder="Full Name"><input type="email" id="signupEmail" placeholder="Email"><input type="password" id="signupPassword" placeholder="Password (min 6)"><input type="password" id="signupConfirmPassword" placeholder="Confirm"><input type="text" id="signupCity" placeholder="City"><input type="tel" id="signupPhone" placeholder="Phone"><button class="btn-primary" id="signupBtn">Sign Up</button><button class="btn-outline" onclick="closeModals()">Cancel</button></div></div>
+<div id="loginModal" class="modal"><div class="modal-content"><h2>Login</h2><div id="loginError" class="error-msg"></div><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPassword" placeholder="Password"><button class="btn-primary" id="loginBtn">Login</button><button class="btn-outline" onclick="closeModals()">Cancel</button></div></div>
+<div id="signupModal" class="modal"><div class="modal-content"><h2>Sign Up</h2><div id="signupError" class="error-msg"></div><input type="text" id="signupName" placeholder="Full Name"><input type="email" id="signupEmail" placeholder="Email"><input type="password" id="signupPassword" placeholder="Password (min 6)"><input type="password" id="signupConfirmPassword" placeholder="Confirm"><input type="text" id="signupCity" placeholder="City"><input type="tel" id="signupPhone" placeholder="Phone"><button class="btn-primary" id="signupBtn">Sign Up</button><button class="btn-outline" onclick="closeModals()">Cancel</button></div></div>
 
 <div id="sellModal" class="modal">
-  <div class="modal-content">
-    <h2>List Your Book</h2>
-    <div id="sellError" class="error-msg"></div>
-    <input type="text" id="bookTitle" placeholder="Book Title *">
-    <input type="text" id="bookAuthor" placeholder="Author *">
+  <div class="modal-content"><h2>List Your Book</h2><div id="sellError" class="error-msg"></div>
+    <input type="text" id="bookTitle" placeholder="Book Title *"><input type="text" id="bookAuthor" placeholder="Author *">
     <select id="bookGenre"><option value="Fiction">Fiction</option><option value="Classic">Classic</option><option value="Mystery">Mystery</option><option value="Sci-Fi">Sci-Fi</option><option value="Romance">Romance</option><option value="Self-Help">Self-Help</option></select>
-    <input type="number" id="bookPrice" placeholder="Price (₹) *">
-    <input type="text" id="bookLocation" placeholder="City">
-    <input type="tel" id="sellerPhone" placeholder="WhatsApp Number (10 digits)">
-    <textarea id="bookCondition" rows="2" placeholder="Condition"></textarea>
-    <p class="text-sm" style="margin-top:5px;"><i class="fas fa-images"></i> Book Photos (paste image URLs, comma separated):</p>
-    <input type="text" id="photoUrls" placeholder="https://example.com/book1.jpg, https://example.com/book2.jpg">
+    <input type="number" id="bookPrice" placeholder="Price (₹) *"><input type="text" id="bookLocation" placeholder="City">
+    <input type="tel" id="sellerPhone" placeholder="WhatsApp Number (10 digits)"><textarea id="bookCondition" rows="2" placeholder="Condition"></textarea>
+    <p><i class="fas fa-images"></i> Photos (image URLs, comma separated):</p>
+    <input type="text" id="photoUrls" placeholder="https://example.com/1.jpg, https://example.com/2.jpg">
     <div class="flex gap-3"><button class="btn-primary" id="publishBtn">Publish</button><button class="btn-outline" onclick="closeModals()">Cancel</button></div>
   </div>
 </div>
@@ -279,7 +274,7 @@
       if (unread) unreadCount += unread;
       return { ...c, otherName: profile?.full_name || 'User', otherId, unreadCount: unread || 0 };
     }));
-    document.getElementById('conversationsList').innerHTML = convos.map(c => `<div class="chat-conversation" onclick="openConversation(${c.id}, '${c.otherId}', ${c.book_id})"><div style="display:flex; justify-content:space-between;"><strong>${escapeHtml(c.otherName)}</strong>${c.unreadCount > 0 ? `<span class="chat-badge" style="position:static;">${c.unreadCount}</span>` : ''}</div><small>📖 ${escapeHtml(c.books?.title || 'Book')}</small><div class="text-sm text-gray-500">${c.last_message ? escapeHtml(c.last_message.substring(0,50)) : 'No messages'}</div></div>`).join('');
+    document.getElementById('conversationsList').innerHTML = convos.map(c => `<div class="chat-conversation" onclick="openConversation(${c.id}, '${c.otherId}', ${c.book_id})"><div style="display:flex; justify-content:space-between;"><strong>${escapeHtml(c.otherName)}</strong>${c.unreadCount > 0 ? `<span class="chat-badge">${c.unreadCount}</span>` : ''}</div><small>📖 ${escapeHtml(c.books?.title || 'Book')}</small><div class="text-sm text-gray-500">${c.last_message ? escapeHtml(c.last_message.substring(0,50)) : 'No messages'}</div></div>`).join('');
     document.getElementById('chatUnreadBadge').innerText = unreadCount;
     document.getElementById('chatUnreadBadge').style.display = unreadCount > 0 ? 'inline-block' : 'none';
   }
@@ -314,4 +309,9 @@
     if (currentGenre !== 'all') query = query.eq('genre', currentGenre);
     if (currentSearch) query = query.or(`title.ilike.%${currentSearch}%,author.ilike.%${currentSearch}%,seller_name.ilike.%${currentSearch}%`);
     const locationFilter = document.getElementById('locationFilter')?.value;
-    if
+    if (locationFilter) query = query.ilike('location', `%${locationFilter}%`);
+    const statusFilter = document.getElementById('statusFilter')?.value;
+    if (statusFilter === 'available') query = query.eq('status', 'available');
+    const { data, error } = await query;
+    if (error) { console.error(error); document.getElementById('booksGrid').innerHTML = `<div class="text-center" style="grid-column:1/-1;padding:3rem;color:red;">Error: ${error.message}</div>`; return; }
+    if (!data || data.length === 0)
