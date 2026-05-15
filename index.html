@@ -25,13 +25,6 @@
     .btn-primary:hover { background: #b45309; }
     .btn-green { background: #16a34a; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 0.5rem; border: none; cursor: pointer; }
     .btn-green:hover { background: #15803d; }
-    .btn-gray { background: #4b5563; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 0.875rem; }
-    .btn-red { background: #dc2626; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; }
-    .btn-red:hover { background: #b91c1c; }
-    .btn-save { background: #8b5cf6; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; }
-    .btn-save:hover { background: #7c3aed; }
-    .btn-chat { background: #3b82f6; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; }
-    .btn-chat:hover { background: #2563eb; }
     .btn-share { background: #25D366; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; }
     .btn-share:hover { background: #128C7E; }
     
@@ -57,24 +50,15 @@
     .genre-btn.active { background: #d97706; color: white; }
     
     .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; }
-    .tab { padding: 0.75rem 1.5rem; cursor: pointer; border-bottom: 2px solid transparent; position: relative; }
+    .tab { padding: 0.75rem 1.5rem; cursor: pointer; border-bottom: 2px solid transparent; }
     .tab.active { border-bottom-color: #d97706; color: #d97706; font-weight: 600; }
     
-    .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+    .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
     .book-card { background: white; border-radius: 0.75rem; border: 1px solid #e5e7eb; overflow: hidden; transition: all 0.2s; }
     .book-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-    
-    /* Multiple Photos Carousel */
-    .book-cover { height: 220px; background: linear-gradient(135deg, #fef3e2, #fff4e8); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+    .book-cover { height: 200px; background: linear-gradient(135deg, #fef3e2, #fff4e8); display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .book-cover img { width: 100%; height: 100%; object-fit: cover; }
     .book-cover i { font-size: 3rem; color: #d97706; }
-    .photo-nav { position: absolute; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; }
-    .photo-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; }
-    .photo-dot.active { background: white; }
-    .photo-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 1rem; }
-    .photo-arrow.prev { left: 5px; }
-    .photo-arrow.next { right: 5px; }
-    
     .book-info { padding: 1rem; }
     .book-title { font-weight: 700; font-size: 1.125rem; margin-bottom: 0.25rem; }
     .book-author { font-size: 0.875rem; color: #6b7280; margin-bottom: 0.5rem; }
@@ -85,35 +69,12 @@
     .seller-name { font-size: 0.75rem; color: #9ca3af; margin-top: 0.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
     .action-buttons { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
     
-    /* Multiple Photos Upload */
-    .photo-upload-area { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
-    .photo-preview { width: 80px; height: 80px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid #ddd; }
-    .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
-    .remove-photo { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-    .add-photo-btn { width: 80px; height: 80px; border: 2px dashed #d97706; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fffbeb; }
-    
-    .chat-panel { position: fixed; bottom: 0; right: 20px; width: 350px; background: white; border-radius: 12px 12px 0 0; box-shadow: 0 -4px 12px rgba(0,0,0,0.15); z-index: 1000; display: none; flex-direction: column; }
-    .chat-header { background: #d97706; color: white; padding: 12px 16px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; }
-    .chat-messages { height: 350px; overflow-y: auto; padding: 12px; background: #f9fafb; }
-    .chat-message { margin-bottom: 12px; display: flex; flex-direction: column; }
-    .chat-message.sent { align-items: flex-end; }
-    .chat-message.received { align-items: flex-start; }
-    .message-bubble { max-width: 80%; padding: 8px 12px; border-radius: 12px; word-wrap: break-word; }
-    .chat-message.sent .message-bubble { background: #d97706; color: white; }
-    .chat-message.received .message-bubble { background: white; border: 1px solid #e5e7eb; }
-    .message-time { font-size: 0.7rem; color: #9ca3af; margin-top: 4px; }
-    .chat-input-area { display: flex; padding: 12px; border-top: 1px solid #e5e7eb; background: white; }
-    .chat-input-area input { flex: 1; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 20px; outline: none; }
-    .chat-badge { background: #ef4444; color: white; font-size: 0.7rem; border-radius: 50%; padding: 2px 6px; min-width: 18px; text-align: center; }
-    .chat-conversation { padding: 12px; border-bottom: 1px solid #e5e7eb; cursor: pointer; }
-    .chat-conversation:hover { background: #f3f4f6; }
-    
     .profile-section { background: white; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1.5rem; }
     .avatar { width: 80px; height: 80px; background: #d97706; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; margin-bottom: 1rem; }
     
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
     .modal.show { display: flex; }
-    .modal-content { background: white; border-radius: 1rem; padding: 1.5rem; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; }
+    .modal-content { background: white; border-radius: 1rem; padding: 1.5rem; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; }
     .modal-content h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
     .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.5rem; margin-bottom: 0.75rem; }
     
@@ -125,7 +86,6 @@
       .books-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
       .nav-inner { flex-direction: column; }
       .action-buttons { flex-direction: column; }
-      .chat-panel { width: 100%; right: 0; }
     }
     button { cursor: pointer; }
   </style>
@@ -139,7 +99,6 @@
         <span class="logo-text">Second<span>Tale</span></span>
         <span class="badge">India</span>
       </div>
-      
       <div class="flex gap-3">
         <div id="authButtons" class="flex gap-3">
           <button class="btn-outline" id="showLoginBtn">Login</button>
@@ -147,7 +106,6 @@
         </div>
         <div id="userMenu" class="hidden flex gap-3" style="align-items: center; flex-wrap: wrap;">
           <span id="userName" class="text-sm"></span>
-          <button class="btn-outline" id="showChatsBtn"><i class="fas fa-comments"></i> Chats <span id="chatUnreadBadge" style="display:none;">0</span></button>
           <button class="btn-outline" id="showSavedBtn"><i class="fas fa-heart"></i> Saved</button>
           <button class="btn-outline" id="showMyListingsBtn"><i class="fas fa-list"></i> My Books</button>
           <button class="btn-outline" id="showProfileBtn"><i class="fas fa-user"></i> Profile</button>
@@ -160,122 +118,51 @@
   <div class="container">
     <div class="tabs">
       <div class="tab active" id="browseTab">📚 Browse Books</div>
-      <div id="savedTab" class="tab hidden">❤️ Saved</div>
-      <div id="myListingsTab" class="tab hidden">📖 My Books</div>
-      <div id="profileTab" class="tab hidden">👤 Profile</div>
-      <div id="chatsTab" class="tab hidden">💬 Messages</div>
+      <div id="savedTab" class="tab hidden">❤️ Saved Books</div>
+      <div id="myListingsTab" class="tab hidden">📖 My Listings</div>
+      <div id="profileTab" class="tab hidden">👤 My Profile</div>
     </div>
 
-    <!-- Browse Section -->
     <div id="browseSection">
       <div class="hero">
         <h1>Buy & Sell Used Books</h1>
-        <p>Chat with sellers. Share books with friends. Multiple photos per listing!</p>
+        <p>Connect with book lovers across India. Direct WhatsApp contact with sellers.</p>
         <button class="btn-primary" id="sellBtn" style="display: none; padding: 0.75rem 1.5rem;">
           <i class="fas fa-plus-circle"></i> Sell Your Book
         </button>
       </div>
-
       <div class="stats">
-        <div><i class="fas fa-book"></i> <span id="bookCount">0</span> books</div>
-        <div><i class="fas fa-users"></i> <span id="sellerCount">0</span> sellers</div>
+        <div><i class="fas fa-book"></i> <span id="bookCount">0</span> books available</div>
+        <div><i class="fas fa-users"></i> <span id="sellerCount">0</span> active sellers</div>
       </div>
-
       <div class="filters">
-        <div class="search-box">
-          <i class="fas fa-search"></i>
-          <input type="text" id="searchInput" placeholder="Search...">
-        </div>
-        <div class="filter-row">
-          <input type="text" id="locationFilter" placeholder="City...">
-          <select id="statusFilter"><option value="all">All</option><option value="available">Available</option></select>
-        </div>
+        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Search by title, author, or seller..."></div>
+        <div class="filter-row"><input type="text" id="locationFilter" placeholder="Filter by city..."><select id="statusFilter"><option value="all">All Books</option><option value="available">Available Only</option></select></div>
         <div class="genre-buttons" id="genreContainer">
-          <button class="genre-btn active" data-genre="all">All</button>
-          <button class="genre-btn" data-genre="Fiction">Fiction</button>
-          <button class="genre-btn" data-genre="Classic">Classic</button>
-          <button class="genre-btn" data-genre="Mystery">Mystery</button>
-          <button class="genre-btn" data-genre="Sci-Fi">Sci-Fi</button>
-          <button class="genre-btn" data-genre="Romance">Romance</button>
-          <button class="genre-btn" data-genre="Self-Help">Self-Help</button>
+          <button class="genre-btn active" data-genre="all">All</button><button class="genre-btn" data-genre="Fiction">Fiction</button><button class="genre-btn" data-genre="Classic">Classic</button><button class="genre-btn" data-genre="Mystery">Mystery</button><button class="genre-btn" data-genre="Sci-Fi">Sci-Fi</button><button class="genre-btn" data-genre="Romance">Romance</button><button class="genre-btn" data-genre="Self-Help">Self-Help</button>
         </div>
       </div>
-
       <div id="booksGrid" class="books-grid"><div class="text-center" style="grid-column:1/-1;padding:3rem;"><div class="loading-spinner"></div><p>Loading books...</p></div></div>
     </div>
 
-    <!-- Saved Section -->
     <div id="savedSection" class="hidden"><h2>❤️ Saved Books</h2><div id="savedGrid" class="books-grid"></div></div>
-
-    <!-- My Listings Section -->
-    <div id="myListingsSection" class="hidden"><h2>📖 My Books</h2><div id="myListingsGrid" class="books-grid"></div></div>
-
-    <!-- Profile Section -->
+    <div id="myListingsSection" class="hidden"><h2>📖 My Book Listings</h2><div id="myListingsGrid" class="books-grid"></div></div>
     <div id="profileSection" class="hidden">
-      <div class="profile-section">
-        <div class="avatar" id="userAvatar">👤</div>
-        <h3 id="profileName"></h3>
-        <p id="profileEmail"></p>
-        <p><i class="fas fa-map-marker-alt"></i> <span id="profileCity">Not set</span></p>
-        <p><i class="fas fa-phone"></i> <span id="profilePhone">Not set</span></p>
-        <p><i class="fas fa-star"></i> Rating: <span id="profileRating">0</span> (<span id="profileReviewCount">0</span> reviews)</p>
-        <button class="btn-primary" id="editProfileBtn">Edit Profile</button>
-      </div>
-      <div class="stats"><h3>📊 Stats</h3><p>Books Listed: <span id="userBookCount">0</span></p><p>Saved: <span id="userSavedCount">0</span></p></div>
+      <div class="profile-section"><div class="avatar" id="userAvatar">👤</div><h3 id="profileName"></h3><p id="profileEmail"></p><p><i class="fas fa-map-marker-alt"></i> <span id="profileCity">Not set</span></p><p><i class="fas fa-phone"></i> <span id="profilePhone">Not set</span></p><p><i class="fas fa-star"></i> Rating: <span id="profileRating">0</span> (<span id="profileReviewCount">0</span> reviews)</p><button class="btn-primary" id="editProfileBtn">Edit Profile</button></div>
+      <div class="stats"><h3>📊 My Stats</h3><p>Books Listed: <span id="userBookCount">0</span></p><p>Books Saved: <span id="userSavedCount">0</span></p></div>
     </div>
-
-    <!-- Chats Section -->
-    <div id="chatsSection" class="hidden"><h2>💬 Conversations</h2><div id="conversationsList" style="background:white; border-radius:12px; overflow:hidden;"></div></div>
-  </div>
-
-  <!-- Chat Panel -->
-  <div id="chatPanel" class="chat-panel">
-    <div class="chat-header"><span>💬 Chat</span><button id="closeChatBtn" style="background:none; border:none; color:white; cursor:pointer;">✕</button></div>
-    <div id="chatMessages" class="chat-messages"></div>
-    <div class="chat-input-area"><input type="text" id="chatInput" placeholder="Type a message..."><button class="btn-primary" id="sendChatBtn">Send</button></div>
   </div>
 
   <!-- Modals -->
-  <div id="loginModal" class="modal"><div class="modal-content"><h2>Login</h2><div id="loginError" class="error-msg"></div><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPassword" placeholder="Password"><button class="btn-primary" id="loginBtn" style="width:100%">Login</button><button class="btn-outline" onclick="closeModals()" style="width:100%; margin-top:0.5rem">Cancel</button></div></div>
+  <div id="loginModal" class="modal"><div class="modal-content"><h2>Welcome Back</h2><div id="loginError" class="error-msg"></div><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPassword" placeholder="Password"><button class="btn-primary" id="loginBtn">Login</button><button class="btn-outline" onclick="closeModals()">Cancel</button></div></div>
 
-  <div id="signupModal" class="modal"><div class="modal-content"><h2>Sign Up</h2><div id="signupError" class="error-msg"></div><input type="text" id="signupName" placeholder="Full Name"><input type="email" id="signupEmail" placeholder="Email"><input type="password" id="signupPassword" placeholder="Password (min 6)"><input type="password" id="signupConfirmPassword" placeholder="Confirm"><input type="text" id="signupCity" placeholder="City"><input type="tel" id="signupPhone" placeholder="Phone"><button class="btn-primary" id="signupBtn" style="width:100%">Sign Up</button><button class="btn-outline" onclick="closeModals()" style="width:100%; margin-top:0.5rem">Cancel</button></div></div>
+  <div id="signupModal" class="modal"><div class="modal-content"><h2>Create Account</h2><div id="signupError" class="error-msg"></div><input type="text" id="signupName" placeholder="Full Name"><input type="email" id="signupEmail" placeholder="Email"><input type="password" id="signupPassword" placeholder="Password (min 6)"><input type="password" id="signupConfirmPassword" placeholder="Confirm Password"><input type="text" id="signupCity" placeholder="City"><input type="tel" id="signupPhone" placeholder="Phone Number"><button class="btn-primary" id="signupBtn">Sign Up</button><button class="btn-outline" onclick="closeModals()">Cancel</button></div></div>
 
-  <!-- Sell Modal with Multiple Photos -->
-  <div id="sellModal" class="modal">
-    <div class="modal-content">
-      <h2>List Your Book</h2>
-      <div id="sellError" class="error-msg"></div>
-      <input type="text" id="bookTitle" placeholder="Book Title *">
-      <input type="text" id="bookAuthor" placeholder="Author *">
-      <select id="bookGenre">
-        <option value="Fiction">Fiction</option><option value="Classic">Classic</option>
-        <option value="Mystery">Mystery</option><option value="Sci-Fi">Sci-Fi</option>
-        <option value="Romance">Romance</option><option value="Self-Help">Self-Help</option>
-      </select>
-      <input type="number" id="bookPrice" placeholder="Price (₹) *">
-      <input type="text" id="bookLocation" placeholder="City">
-      <input type="tel" id="sellerPhone" placeholder="WhatsApp Number (10 digits)">
-      <textarea id="bookCondition" rows="2" placeholder="Condition"></textarea>
-      
-      <!-- Multiple Photos Upload -->
-      <p class="text-sm" style="margin: 10px 0 5px 0;"><i class="fas fa-images"></i> Book Photos (up to 5):</p>
-      <div id="photoUploadArea" class="photo-upload-area">
-        <div id="addPhotoBtn" class="add-photo-btn"><i class="fas fa-plus"></i><br><span style="font-size:10px;">Add</span></div>
-      </div>
-      <input type="file" id="photoInput" accept="image/*" multiple style="display:none;">
-      <p class="text-sm text-gray-500">Paste image URLs below (optional):</p>
-      <input type="text" id="photoUrls" placeholder="Paste image URLs separated by commas">
-      
-      <div class="flex gap-3" style="margin-top: 15px;">
-        <button class="btn-primary" id="publishBtn" style="flex:1;">Publish</button>
-        <button class="btn-outline" onclick="closeModals()" style="flex:1;">Cancel</button>
-      </div>
-    </div>
-  </div>
+  <div id="sellModal" class="modal"><div class="modal-content"><h2>List Your Book</h2><div id="sellError" class="error-msg"></div><input type="text" id="bookTitle" placeholder="Book Title *"><input type="text" id="bookAuthor" placeholder="Author *"><select id="bookGenre"><option value="Fiction">Fiction</option><option value="Classic">Classic</option><option value="Mystery">Mystery</option><option value="Sci-Fi">Sci-Fi</option><option value="Romance">Romance</option><option value="Self-Help">Self-Help</option></select><input type="number" id="bookPrice" placeholder="Price (₹) *"><input type="text" id="bookLocation" placeholder="City"><input type="tel" id="sellerPhone" placeholder="WhatsApp Number (10 digits)"><textarea id="bookCondition" rows="2" placeholder="Condition"></textarea><input type="text" id="photoUrls" placeholder="Image URLs (comma separated)"><div class="flex gap-3"><button class="btn-primary" id="publishBtn">Publish</button><button class="btn-outline" onclick="closeModals()">Cancel</button></div></div></div>
 
-  <div id="reviewModal" class="modal"><div class="modal-content"><h2>Rate Seller</h2><p>Seller: <strong id="reviewSellerName"></strong></p><div class="flex gap-2" style="margin:1rem 0"><button onclick="setRating(1)">⭐</button><button onclick="setRating(2)">⭐⭐</button><button onclick="setRating(3)">⭐⭐⭐</button><button onclick="setRating(4)">⭐⭐⭐⭐</button><button onclick="setRating(5)">⭐⭐⭐⭐⭐</button></div><textarea id="reviewComment" rows="3" placeholder="Your experience..."></textarea><input type="hidden" id="reviewSellerId"><button class="btn-primary" id="submitReviewBtn">Submit</button><button class="btn-outline" onclick="closeModals()">Cancel</button></div></div>
+  <div id="reviewModal" class="modal"><div class="modal-content"><h2>Rate Seller</h2><p>Seller: <strong id="reviewSellerName"></strong></p><div class="flex gap-2" style="margin:1rem 0"><button onclick="setRating(1)">⭐</button><button onclick="setRating(2)">⭐⭐</button><button onclick="setRating(3)">⭐⭐⭐</button><button onclick="setRating(4)">⭐⭐⭐⭐</button><button onclick="setRating(5)">⭐⭐⭐⭐⭐</button></div><textarea id="reviewComment" rows="3" placeholder="Share your experience..."></textarea><input type="hidden" id="reviewSellerId"><button class="btn-primary" id="submitReviewBtn">Submit Review</button><button class="btn-outline" onclick="closeModals()">Cancel</button></div></div>
 
-  <div id="editProfileModal" class="modal"><div class="modal-content"><h2>Edit Profile</h2><input type="text" id="editName" placeholder="Full Name"><input type="text" id="editCity" placeholder="City"><input type="tel" id="editPhone" placeholder="Phone"><div class="flex gap-3"><button class="btn-primary" id="saveProfileBtn">Save</button><button class="btn-outline" onclick="closeModals()">Cancel</button></div></div></div>
+  <div id="editProfileModal" class="modal"><div class="modal-content"><h2>Edit Profile</h2><input type="text" id="editName" placeholder="Full Name"><input type="text" id="editCity" placeholder="City"><input type="tel" id="editPhone" placeholder="Phone Number"><div class="flex gap-3"><button class="btn-primary" id="saveProfileBtn">Save</button><button class="btn-outline" onclick="closeModals()">Cancel</button></div></div></div>
 
   <script>
     const SUPABASE_URL = 'https://vhdziqbrhwmjelextecs.supabase.co';
@@ -288,16 +175,11 @@
     let currentRating = 0;
     let currentReviewSellerId = null;
     let savedBooks = new Set();
-    let currentConversationId = null;
-    let chatChannel = null;
-    let photoUrls = [];
-    let photoIndexMap = new Map(); // For carousel
 
     async function init() {
       supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       await checkSession();
       setupEventListeners();
-      setupPhotoUpload();
     }
 
     async function checkSession() {
@@ -311,11 +193,8 @@
         document.getElementById('savedTab').classList.remove('hidden');
         document.getElementById('myListingsTab').classList.remove('hidden');
         document.getElementById('profileTab').classList.remove('hidden');
-        document.getElementById('chatsTab').classList.remove('hidden');
         await loadSavedBooks();
         await loadUserProfile();
-        await loadConversations();
-        subscribeToMessages();
       } else {
         currentUser = null;
         document.getElementById('authButtons').classList.remove('hidden');
@@ -324,44 +203,127 @@
         document.getElementById('savedTab').classList.add('hidden');
         document.getElementById('myListingsTab').classList.add('hidden');
         document.getElementById('profileTab').classList.add('hidden');
-        document.getElementById('chatsTab').classList.add('hidden');
-        if (chatChannel) chatChannel.unsubscribe();
       }
       await loadBooks();
     }
 
-    function setupPhotoUpload() {
-      const photoInput = document.getElementById('photoInput');
-      const addBtn = document.getElementById('addPhotoBtn');
-      const photoUrlsInput = document.getElementById('photoUrls');
-      
-      addBtn.onclick = () => photoInput.click();
-      photoInput.onchange = (e) => {
-        const files = Array.from(e.target.files);
-        files.forEach(file => {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            // For demo, we'll store as URL. In production, upload to Supabase Storage
-            photoUrls.push(event.target.result);
-            updatePhotoPreview();
-            photoUrlsInput.value = photoUrls.join(',');
-          };
-          reader.readAsDataURL(file);
-        });
-      };
-      
-      photoUrlsInput.onchange = (e) => {
-        photoUrls = e.target.value.split(',').filter(u => u.trim());
-        updatePhotoPreview();
-      };
+    async function loadUserProfile() {
+      if (!currentUser) return;
+      const { data } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
+      if (data) {
+        document.getElementById('profileName').innerText = data.full_name || currentUser.email.split('@')[0];
+        document.getElementById('profileEmail').innerText = currentUser.email;
+        document.getElementById('profileCity').innerText = data.city || 'Not set';
+        document.getElementById('profilePhone').innerText = data.phone || 'Not set';
+        document.getElementById('userAvatar').innerText = (data.full_name || 'U')[0].toUpperCase();
+      }
+      const { data: ratingData } = await supabaseClient.from('seller_ratings').select('*').eq('seller_id', currentUser.id).single();
+      if (ratingData) {
+        document.getElementById('profileRating').innerText = ratingData.avg_rating || 0;
+        document.getElementById('profileReviewCount').innerText = ratingData.review_count || 0;
+      }
     }
 
-    function updatePhotoPreview() {
-      const area = document.getElementById('photoUploadArea');
-      const previews = area.querySelectorAll('.photo-preview');
-      previews.forEach(p => p.remove());
+    async function loadSavedBooks() {
+      if (!currentUser) return;
+      const { data } = await supabaseClient.from('saved_books').select('book_id').eq('user_id', currentUser.id);
+      savedBooks.clear();
+      data?.forEach(item => savedBooks.add(item.book_id));
+      document.getElementById('userSavedCount').innerText = savedBooks.size;
+    }
+
+    async function loadBooks() {
+      let query = supabaseClient.from('books').select('*').order('created_at', { ascending: false });
+      if (currentGenre !== 'all') query = query.eq('genre', currentGenre);
+      if (currentSearch) query = query.or(`title.ilike.%${currentSearch}%,author.ilike.%${currentSearch}%,seller_name.ilike.%${currentSearch}%`);
+      const locationFilter = document.getElementById('locationFilter')?.value;
+      if (locationFilter) query = query.ilike('location', `%${locationFilter}%`);
+      const statusFilter = document.getElementById('statusFilter')?.value;
+      if (statusFilter === 'available') query = query.eq('status', 'available');
+      const { data, error } = await query;
+      if (error) { console.error(error); return; }
+      if (!data || data.length === 0) {
+        document.getElementById('booksGrid').innerHTML = '<div class="text-center" style="grid-column:1/-1;padding:3rem;"><p>No books found.</p></div>';
+        document.getElementById('bookCount').innerText = '0';
+        return;
+      }
+      const sellerIds = [...new Set(data.map(b => b.seller_id))];
+      const { data: ratings } = await supabaseClient.from('seller_ratings').select('*').in('seller_id', sellerIds);
+      const ratingMap = new Map();
+      ratings?.forEach(r => ratingMap.set(r.seller_id, { avg: r.avg_rating, count: r.review_count }));
       
-      photoUrls.forEach((url, idx) => {
-        const div = document.createElement('div');
-        div.className = 'photo-preview';
-        div.innerHTML = `<img src="${url}"><div class="remove-photo" onclick="removePhoto(${idx})">✕
+      document.getElementById('booksGrid').innerHTML = data.map(book => {
+        const rating = ratingMap.get(book.seller_id);
+        const isSaved = savedBooks.has(book.id);
+        // Get first image from photos array or use single image_url
+        const coverImage = book.photos?.[0] || book.image_url;
+        return `<div class="book-card"><div class="book-cover">${coverImage ? `<img src="${coverImage}" onerror="this.innerHTML='<i class=\'fas fa-book-open\'></i>'">` : '<i class="fas fa-book-open"></i>'}</div><div class="book-info"><h3 class="book-title">${escapeHtml(book.title)}</h3><p class="book-author">by ${escapeHtml(book.author)}</p><div><span class="book-genre">${book.genre}</span><span class="book-price">₹${book.price}</span>${book.location ? `<span class="book-location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(book.location)}</span>` : ''}</div><div class="rating-stars">${rating ? `⭐ ${rating.avg} (${rating.count} reviews)` : '⭐ No reviews yet'}</div><p class="book-condition">📖 ${escapeHtml(book.condition || 'Good condition')}</p><div class="seller-name"><span><i class="fas fa-user"></i> ${escapeHtml(book.seller_name)}</span>${currentUser && book.seller_id !== currentUser.id ? `<button onclick="showReviewModal('${book.seller_id}', '${escapeHtml(book.seller_name)}', '${escapeHtml(book.title)}')" class="btn-outline" style="padding:0.25rem 0.5rem; font-size:0.75rem;">⭐ Rate</button>` : ''}</div><div class="action-buttons">${currentUser && book.seller_id !== currentUser.id && book.status !== 'sold' ? `<a href="https://wa.me/91${book.seller_phone}?text=Hi! I'm interested in \"${book.title}\" for ₹${book.price}" target="_blank" class="btn-green" style="flex:1; text-decoration:none; text-align:center;"><i class="fab fa-whatsapp"></i> Contact</a><button onclick="shareBook('${escapeHtml(book.title)}', ${book.price})" class="btn-share" style="flex:1;"><i class="fab fa-whatsapp"></i> Share</button><button onclick="makeOffer('${book.seller_phone}', '${escapeHtml(book.title)}', ${book.price})" class="btn-outline" style="flex:0.5;">💬 Offer</button>` : ''}${currentUser && book.seller_id !== currentUser.id ? `<button onclick="toggleSave(${book.id})" class="btn-save" style="flex:0.5;">${isSaved ? '❤️' : '🤍'}</button>` : ''}</div></div></div>`;
+      }).join('');
+      document.getElementById('bookCount').innerText = data.length;
+      document.getElementById('sellerCount').innerText = new Set(data.map(b => b.seller_id)).size;
+    }
+
+    function shareBook(title, price) {
+      const text = `Check out this book on Second Tale: "${title}" for ₹${price}! Download the app: ${window.location.href}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    async function loadSaved() {
+      if (!currentUser) return;
+      const { data } = await supabaseClient.from('saved_books').select('book_id').eq('user_id', currentUser.id);
+      if (!data?.length) { document.getElementById('savedGrid').innerHTML = '<div class="text-center"><p>No saved books.</p></div>'; return; }
+      const { data: books } = await supabaseClient.from('books').select('*').in('id', data.map(d => d.book_id));
+      document.getElementById('savedGrid').innerHTML = books.map(book => `<div class="book-card"><div class="book-cover">${book.photos?.[0] || book.image_url ? `<img src="${book.photos?.[0] || book.image_url}">` : '<i class="fas fa-book-open"></i>'}</div><div class="book-info"><h3>${escapeHtml(book.title)}</h3><p>by ${escapeHtml(book.author)}</p><p><strong>₹${book.price}</strong></p><button onclick="toggleSave(${book.id})" class="btn-red">Remove</button></div></div>`).join('');
+    }
+
+    async function loadMyListings() {
+      if (!currentUser) return;
+      const { data } = await supabaseClient.from('books').select('*').eq('seller_id', currentUser.id).order('created_at', { ascending: false });
+      document.getElementById('myListingsGrid').innerHTML = data?.map(book => `<div class="book-card"><div class="book-cover">${book.photos?.[0] || book.image_url ? `<img src="${book.photos?.[0] || book.image_url}">` : '<i class="fas fa-book-open"></i>'}</div><div class="book-info"><h3>${escapeHtml(book.title)}</h3><p>by ${escapeHtml(book.author)}</p><p><strong>₹${book.price}</strong> ${book.location ? `📍 ${book.location}` : ''}</p><p>Status: ${book.status === 'sold' ? 'SOLD' : 'Available'}</p><div class="flex gap-2" style="margin-top:0.75rem;">${book.status !== 'sold' ? `<button onclick="markAsSold(${book.id})" class="btn-green">✓ Mark Sold</button>` : ''}<button onclick="deleteBook(${book.id})" class="btn-red">🗑 Delete</button></div></div></div>`).join('');
+      document.getElementById('userBookCount').innerText = data?.length || 0;
+    }
+
+    async function toggleSave(bookId) {
+      if (!currentUser) { showLoginModal(); return; }
+      if (savedBooks.has(bookId)) {
+        await supabaseClient.from('saved_books').delete().eq('book_id', bookId).eq('user_id', currentUser.id);
+        savedBooks.delete(bookId);
+        alert('Removed');
+      } else {
+        await supabaseClient.from('saved_books').insert({ book_id: bookId, user_id: currentUser.id });
+        savedBooks.add(bookId);
+        alert('Saved!');
+      }
+      document.getElementById('userSavedCount').innerText = savedBooks.size;
+      await loadBooks();
+    }
+
+    async function publishBook() {
+      const title = document.getElementById('bookTitle').value;
+      const author = document.getElementById('bookAuthor').value;
+      const genre = document.getElementById('bookGenre').value;
+      const price = parseInt(document.getElementById('bookPrice').value);
+      const location = document.getElementById('bookLocation').value;
+      const sellerPhone = document.getElementById('sellerPhone').value;
+      const condition = document.getElementById('bookCondition').value;
+      const photoUrlsStr = document.getElementById('photoUrls').value;
+      const photos = photoUrlsStr ? photoUrlsStr.split(',').map(u => u.trim()) : [];
+      
+      if (!title || !author || !price || !sellerPhone) { alert('Fill required fields'); return; }
+      const { error } = await supabaseClient.from('books').insert([{
+        title, author, genre, price, location, condition: condition || 'Good',
+        photos: photos, seller_name: currentUser.user_metadata?.full_name || currentUser.email.split('@')[0],
+        seller_id: currentUser.id, seller_phone: sellerPhone, status: 'available'
+      }]);
+      if (error) alert('Error: ' + error.message);
+      else { closeModals(); alert('✅ Book listed!'); loadBooks(); }
+    }
+
+    async function markAsSold(id) { await supabaseClient.from('books').update({ status: 'sold' }).eq('id', id); alert('✅ Marked as sold'); loadMyListings(); loadBooks(); }
+    async function deleteBook(id) { if (confirm('Delete?')) { await supabaseClient.from('books').delete().eq('id', id); loadMyListings(); loadBooks(); } }
+    async function submitReview() { await supabaseClient.from('reviews').insert({ seller_id: currentReviewSellerId, reviewer_id: currentUser.id, rating: currentRating, comment: document.getElementById('reviewComment').value }); alert('✅ Review submitted!'); closeModals(); loadBooks(); }
+    function setRating(r) { currentRating = r; alert(`⭐ ${r} stars selected`); }
+    function showReviewModal(sellerId, sellerName, bookTitle) { currentReviewSellerId = sellerId; document.getElementById('reviewSellerName').innerText = sellerName; document.getElementById('reviewModal').classList.add('show'); }
+    function makeOffer(phone, title, price) { const offer = prompt(`Make offer for "${title}" (₹${price}):`); if (offer) window.open(`https://wa.me/91${phone}?text=I'd like to offer ₹${offer} for "${title}"`, '_blank'); }
+    async function login() { const { error } = await supabaseClient.auth.signInWithPassword({ email: document.getElementById('loginEmail').value, password: document.getElementById('loginPassword').value }); if (error) alert(error.message); else { closeModals(); checkSession(); alert('✅ Logged in!'); } }
+    async function signup() { const { error } = await supabaseClient.auth.sign
