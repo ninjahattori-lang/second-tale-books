@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Second Tale | Buy & Sell Used Books</title>
+  <title>Second Tale | Buy & Sell Used Books with Chat</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -20,27 +20,104 @@
     .badge { font-size: 0.75rem; background: #dcfce7; color: #166534; padding: 0.25rem 0.5rem; border-radius: 9999px; margin-left: 0.5rem; }
     
     .btn-outline { padding: 0.5rem 1rem; border: 1px solid #d97706; color: #d97706; background: transparent; border-radius: 0.5rem; cursor: pointer; font-weight: 500; }
+    .btn-outline:hover { background: #fffbeb; }
     .btn-primary { padding: 0.5rem 1rem; background: #d97706; color: white; border: none; border-radius: 0.5rem; cursor: pointer; font-weight: 500; }
-    .btn-green { background: #16a34a; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .btn-primary:hover { background: #b45309; }
+    .btn-green { background: #16a34a; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 0.5rem; border: none; cursor: pointer; }
+    .btn-green:hover { background: #15803d; }
+    .btn-gray { background: #4b5563; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 0.875rem; }
     .btn-red { background: #dc2626; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; }
+    .btn-red:hover { background: #b91c1c; }
     .btn-save { background: #8b5cf6; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; }
+    .btn-save:hover { background: #7c3aed; }
     .btn-chat { background: #3b82f6; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; }
-
+    .btn-chat:hover { background: #2563eb; }
+    
     .hidden { display: none !important; }
+    .flex { display: flex; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    
+    .hero { background: linear-gradient(135deg, #fef3e2 0%, #fff4e8 100%); border-radius: 1rem; padding: 2rem; text-align: center; margin: 1.5rem 0; }
+    .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .hero p { color: #6b7280; margin-bottom: 1rem; }
+    
+    .stats { background: white; border-radius: 0.75rem; padding: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 1.5rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    
+    .filters { background: white; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1.5rem; }
+    .search-box { flex: 1; position: relative; }
+    .search-box input { width: 100%; padding: 0.5rem 0.5rem 0.5rem 2rem; border: 1px solid #d1d5db; border-radius: 0.5rem; outline: none; }
+    .search-box i { position: absolute; left: 0.5rem; top: 50%; transform: translateY(-50%); color: #9ca3af; }
+    .filter-row { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; }
+    .filter-row input, .filter-row select { padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.5rem; flex: 1; }
+    .genre-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .genre-btn { padding: 0.375rem 1rem; border-radius: 9999px; border: none; cursor: pointer; background: #e5e7eb; color: #4b5563; }
+    .genre-btn.active { background: #d97706; color: white; }
+    
+    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; }
+    .tab { padding: 0.75rem 1.5rem; cursor: pointer; border-bottom: 2px solid transparent; position: relative; }
+    .tab.active { border-bottom-color: #d97706; color: #d97706; font-weight: 600; }
+    
     .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
     .book-card { background: white; border-radius: 0.75rem; border: 1px solid #e5e7eb; overflow: hidden; transition: all 0.2s; }
     .book-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
     .book-cover { height: 200px; background: linear-gradient(135deg, #fef3e2, #fff4e8); display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .book-cover img { width: 100%; height: 100%; object-fit: cover; }
     .book-cover i { font-size: 3rem; color: #d97706; }
-
-    .hero, .filters, .stats, .profile-section { background: white; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1.5rem; }
-    .hero { background: linear-gradient(135deg, #fef3e2 0%, #fff4e8 100%); text-align: center; }
-
-    .chat-panel { position: fixed; bottom: 20px; right: 20px; width: 350px; background: white; border-radius: 12px 12px 0 0; box-shadow: 0 -4px 12px rgba(0,0,0,0.15); z-index: 1000; display: none; flex-direction: column; }
+    .book-info { padding: 1rem; }
+    .book-title { font-weight: 700; font-size: 1.125rem; margin-bottom: 0.25rem; }
+    .book-author { font-size: 0.875rem; color: #6b7280; margin-bottom: 0.5rem; }
+    .book-genre { display: inline-block; font-size: 0.75rem; background: #f3f4f6; padding: 0.125rem 0.5rem; border-radius: 9999px; margin-right: 0.5rem; }
+    .book-price { display: inline-block; font-size: 0.75rem; background: #dcfce7; color: #166534; padding: 0.125rem 0.5rem; border-radius: 9999px; }
+    .book-location { display: inline-block; font-size: 0.75rem; background: #e0e7ff; color: #3730a3; padding: 0.125rem 0.5rem; border-radius: 9999px; margin-right: 0.5rem; }
+    .rating-stars { color: #fbbf24; font-size: 0.875rem; margin: 0.5rem 0; }
+    .seller-name { font-size: 0.75rem; color: #9ca3af; margin-top: 0.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+    .action-buttons { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
+    
+    /* Chat Panel */
+    .chat-panel { position: fixed; bottom: 0; right: 20px; width: 350px; background: white; border-radius: 12px 12px 0 0; box-shadow: 0 -4px 12px rgba(0,0,0,0.15); z-index: 1000; display: none; flex-direction: column; }
+    .chat-header { background: #d97706; color: white; padding: 12px 16px; border-radius: 12px 12px 0 0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .chat-messages { height: 350px; overflow-y: auto; padding: 12px; background: #f9fafb; }
+    .chat-message { margin-bottom: 12px; display: flex; flex-direction: column; }
+    .chat-message.sent { align-items: flex-end; }
+    .chat-message.received { align-items: flex-start; }
+    .message-bubble { max-width: 80%; padding: 8px 12px; border-radius: 12px; word-wrap: break-word; }
+    .chat-message.sent .message-bubble { background: #d97706; color: white; }
+    .chat-message.received .message-bubble { background: white; border: 1px solid #e5e7eb; }
+    .message-time { font-size: 0.7rem; color: #9ca3af; margin-top: 4px; }
+    .chat-input-area { display: flex; padding: 12px; border-top: 1px solid #e5e7eb; background: white; border-radius: 0 0 12px 12px; }
+    .chat-input-area input { flex: 1; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 20px; outline: none; }
+    .chat-input-area button { margin-left: 8px; padding: 8px 16px; }
+    .chat-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 0.7rem; border-radius: 50%; padding: 2px 6px; min-width: 18px; text-align: center; }
+    .chat-conversation { padding: 12px; border-bottom: 1px solid #e5e7eb; cursor: pointer; }
+    .chat-conversation:hover { background: #f3f4f6; }
+    
+    .profile-section { background: white; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .avatar { width: 80px; height: 80px; background: #d97706; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; margin-bottom: 1rem; }
+    
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
     .modal.show { display: flex; }
     .modal-content { background: white; border-radius: 1rem; padding: 1.5rem; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; }
+    .modal-content h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+    .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.5rem; margin-bottom: 0.75rem; }
+    
+    .error-msg { background: #fee2e2; color: #dc2626; padding: 0.5rem; border-radius: 0.5rem; margin-bottom: 0.75rem; font-size: 0.875rem; display: none; }
+    .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #f3f3f3; border-top: 2px solid #d97706; border-radius: 50%; animation: spin 0.6s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    
+    .text-center { text-align: center; }
+    .text-sm { font-size: 0.875rem; }
+    .text-gray-500 { color: #6b7280; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    
+    @media (max-width: 768px) {
+      .books-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+      .nav-inner { flex-direction: column; }
+      .action-buttons { flex-direction: column; }
+      .chat-panel { width: 100%; right: 0; }
+    }
+    button { cursor: pointer; }
   </style>
 </head>
 <body>
@@ -58,13 +135,13 @@
           <button class="btn-outline" id="showLoginBtn">Login</button>
           <button class="btn-primary" id="showSignupBtn">Sign Up</button>
         </div>
-        <div id="userMenu" class="hidden flex gap-3" style="align-items:center;flex-wrap:wrap;">
-          <span id="userName"></span>
-          <button class="btn-outline" id="showChatsBtn"><i class="fas fa-comments"></i> Chats <span id="chatUnreadBadge" class="chat-badge" style="display:none;">0</span></button>
+        <div id="userMenu" class="hidden flex gap-3" style="align-items: center; flex-wrap: wrap;">
+          <span id="userName" class="text-sm"></span>
+          <button class="btn-outline" id="showChatsBtn"><i class="fas fa-comments"></i> Chats <span id="chatUnreadBadge" class="chat-badge" style="display:none; position:static; margin-left:5px;">0</span></button>
           <button class="btn-outline" id="showSavedBtn"><i class="fas fa-heart"></i> Saved</button>
           <button class="btn-outline" id="showMyListingsBtn"><i class="fas fa-list"></i> My Books</button>
           <button class="btn-outline" id="showProfileBtn"><i class="fas fa-user"></i> Profile</button>
-          <button class="btn-outline" id="logoutBtn" style="border-color:#dc2626;color:#dc2626;">Logout</button>
+          <button class="btn-outline" id="logoutBtn" style="border-color: #dc2626; color: #dc2626;">Logout</button>
         </div>
       </div>
     </div>
@@ -73,9 +150,9 @@
   <div class="container">
     <div class="tabs">
       <div class="tab active" id="browseTab">📚 Browse Books</div>
-      <div id="savedTab" class="tab hidden">❤️ Saved</div>
-      <div id="myListingsTab" class="tab hidden">📖 My Books</div>
-      <div id="profileTab" class="tab hidden">👤 Profile</div>
+      <div id="savedTab" class="tab hidden">❤️ Saved Books</div>
+      <div id="myListingsTab" class="tab hidden">📖 My Listings</div>
+      <div id="profileTab" class="tab hidden">👤 My Profile</div>
       <div id="chatsTab" class="tab hidden">💬 Messages</div>
     </div>
 
@@ -83,56 +160,117 @@
     <div id="browseSection">
       <div class="hero">
         <h1>Buy & Sell Used Books</h1>
-        <p>Chat directly • Multiple Photos • India</p>
-        <button class="btn-primary" id="sellBtn" style="display:none; padding:0.75rem 1.5rem;">
+        <p>Chat with sellers directly. No phone numbers needed until you're ready!</p>
+        <button class="btn-primary" id="sellBtn" style="display: none; padding: 0.75rem 1.5rem;">
           <i class="fas fa-plus-circle"></i> Sell Your Book
         </button>
       </div>
 
       <div class="stats">
-        <div><i class="fas fa-book"></i> <span id="bookCount">0</span> books</div>
-        <div><i class="fas fa-users"></i> <span id="sellerCount">0</span> sellers</div>
+        <div><i class="fas fa-book"></i> <span id="bookCount">0</span> books available</div>
+        <div><i class="fas fa-users"></i> <span id="sellerCount">0</span> active sellers</div>
       </div>
 
       <div class="filters">
         <div class="search-box">
           <i class="fas fa-search"></i>
-          <input type="text" id="searchInput" placeholder="Search title, author...">
+          <input type="text" id="searchInput" placeholder="Search by title, author, or seller...">
         </div>
         <div class="filter-row">
-          <input type="text" id="locationFilter" placeholder="City">
+          <input type="text" id="locationFilter" placeholder="Filter by city...">
           <select id="statusFilter">
             <option value="all">All Books</option>
             <option value="available">Available Only</option>
           </select>
         </div>
-        <div class="genre-buttons" id="genreContainer"></div>
+        <div class="genre-buttons" id="genreContainer">
+          <button class="genre-btn active" data-genre="all">All</button>
+          <button class="genre-btn" data-genre="Fiction">Fiction</button>
+          <button class="genre-btn" data-genre="Classic">Classic</button>
+          <button class="genre-btn" data-genre="Mystery">Mystery</button>
+          <button class="genre-btn" data-genre="Sci-Fi">Sci-Fi</button>
+          <button class="genre-btn" data-genre="Romance">Romance</button>
+          <button class="genre-btn" data-genre="Self-Help">Self-Help</button>
+        </div>
       </div>
 
-      <div id="booksGrid" class="books-grid"></div>
+      <div id="booksGrid" class="books-grid">
+        <div class="text-center" style="grid-column: 1/-1; padding: 3rem;">
+          <div class="loading-spinner"></div>
+          <p class="text-gray-500" style="margin-top: 0.5rem;">Loading books...</p>
+        </div>
+      </div>
     </div>
 
-    <!-- Other sections (Saved, My Listings, Profile, Chats) -->
-    <div id="savedSection" class="hidden"><h2>Saved Books</h2><div id="savedGrid" class="books-grid"></div></div>
-    <div id="myListingsSection" class="hidden"><h2>My Listings</h2><div id="myListingsGrid" class="books-grid"></div></div>
+    <!-- Saved Books Section -->
+    <div id="savedSection" class="hidden">
+      <h2 style="margin-bottom: 1rem;">❤️ Saved Books</h2>
+      <div id="savedGrid" class="books-grid"></div>
+    </div>
+
+    <!-- My Listings Section -->
+    <div id="myListingsSection" class="hidden">
+      <h2 style="margin-bottom: 1rem;">📖 My Book Listings</h2>
+      <div id="myListingsGrid" class="books-grid"></div>
+    </div>
+
+    <!-- Profile Section -->
     <div id="profileSection" class="hidden">
       <div class="profile-section">
         <div class="avatar" id="userAvatar">👤</div>
         <h3 id="profileName"></h3>
         <p id="profileEmail"></p>
+        <p><i class="fas fa-map-marker-alt"></i> <span id="profileCity">Not set</span></p>
+        <p><i class="fas fa-phone"></i> <span id="profilePhone">Not set</span></p>
+        <p><i class="fas fa-star"></i> Rating: <span id="profileRating">0</span> ⭐ (<span id="profileReviewCount">0</span> reviews)</p>
         <button class="btn-primary" id="editProfileBtn">Edit Profile</button>
       </div>
+      <div class="stats">
+        <h3>📊 My Stats</h3>
+        <p>Books Listed: <span id="userBookCount">0</span></p>
+        <p>Books Saved: <span id="userSavedCount">0</span></p>
+      </div>
     </div>
-    <div id="chatsSection" class="hidden"><h2>Messages</h2><div id="conversationsList"></div></div>
+
+    <!-- Chats Section -->
+    <div id="chatsSection" class="hidden">
+      <h2 style="margin-bottom: 1rem;">💬 Your Conversations</h2>
+      <div id="conversationsList" style="background:white; border-radius:0.75rem; overflow:hidden;"></div>
+    </div>
   </div>
 
   <!-- Chat Panel -->
   <div id="chatPanel" class="chat-panel">
-    <div class="chat-header">Chat <button id="closeChatBtn">✕</button></div>
-    <div id="chatMessages" style="height:350px;overflow-y:auto;padding:12px;background:#f9fafb;"></div>
-    <div style="padding:12px;display:flex;gap:8px;">
-      <input type="text" id="chatInput" placeholder="Type message..." style="flex:1;padding:10px;border-radius:20px;border:1px solid #ddd;">
-      <button class="btn-primary" id="sendChatBtn">Send</button>
+    <div class="chat-header"><span>💬 Chat</span><button id="closeChatBtn" style="background:none; border:none; color:white; cursor:pointer; font-size:1.2rem;">✕</button></div>
+    <div id="chatMessages" class="chat-messages"></div>
+    <div class="chat-input-area"><input type="text" id="chatInput" placeholder="Type a message..."><button class="btn-primary" id="sendChatBtn">Send</button></div>
+  </div>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <h2>Welcome Back</h2>
+      <div id="loginError" class="error-msg"></div>
+      <input type="email" id="loginEmail" placeholder="Email address">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <button class="btn-primary" id="loginBtn" style="width: 100%; margin-bottom: 0.75rem;">Login</button>
+      <button class="btn-outline" onclick="closeModals()" style="width: 100%;">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div id="signupModal" class="modal">
+    <div class="modal-content">
+      <h2>Create Account</h2>
+      <div id="signupError" class="error-msg"></div>
+      <input type="text" id="signupName" placeholder="Full Name">
+      <input type="email" id="signupEmail" placeholder="Email">
+      <input type="password" id="signupPassword" placeholder="Password (min 6)">
+      <input type="password" id="signupConfirmPassword" placeholder="Confirm Password">
+      <input type="text" id="signupCity" placeholder="City">
+      <input type="tel" id="signupPhone" placeholder="Phone Number">
+      <button class="btn-primary" id="signupBtn" style="width: 100%; margin-bottom: 0.75rem;">Sign Up</button>
+      <button class="btn-outline" onclick="closeModals()" style="width: 100%;">Cancel</button>
     </div>
   </div>
 
@@ -140,6 +278,7 @@
   <div id="sellModal" class="modal">
     <div class="modal-content">
       <h2>List Your Book</h2>
+      <div id="sellError" class="error-msg"></div>
       <input type="text" id="bookTitle" placeholder="Book Title *">
       <input type="text" id="bookAuthor" placeholder="Author *">
       <select id="bookGenre">
@@ -152,153 +291,448 @@
       </select>
       <input type="number" id="bookPrice" placeholder="Price (₹) *">
       <input type="text" id="bookLocation" placeholder="City">
-      <input type="tel" id="sellerPhone" placeholder="WhatsApp Number *">
-      <textarea id="bookCondition" placeholder="Condition / Description"></textarea>
-      <p><strong>Photo URLs</strong> (comma separated):</p>
-      <input type="text" id="photoUrls" placeholder="https://example.com/img1.jpg, https://example.com/img2.jpg">
-      <div style="margin-top:15px;">
-        <button class="btn-primary" id="publishBtn" style="width:100%;">Publish Book</button>
+      <input type="tel" id="sellerPhone" placeholder="WhatsApp Number * (10 digits)">
+      <textarea id="bookCondition" rows="2" placeholder="Condition"></textarea>
+      <input type="url" id="bookImageUrl" placeholder="Image URL (paste link from web)">
+      <p class="text-sm text-gray-500">Tip: Right-click any book image online → Copy image address</p>
+      <div class="flex gap-3">
+        <button class="btn-primary" id="publishBtn" style="flex: 1;">Publish</button>
+        <button class="btn-outline" onclick="closeModals()" style="flex: 1;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Modal -->
+  <div id="reviewModal" class="modal">
+    <div class="modal-content">
+      <h2>Rate Seller</h2>
+      <p>Seller: <strong id="reviewSellerName"></strong></p>
+      <p>Book: <strong id="reviewBookTitle"></strong></p>
+      <div class="flex gap-2" style="margin: 1rem 0;">
+        <button onclick="setRating(1)">⭐</button>
+        <button onclick="setRating(2)">⭐⭐</button>
+        <button onclick="setRating(3)">⭐⭐⭐</button>
+        <button onclick="setRating(4)">⭐⭐⭐⭐</button>
+        <button onclick="setRating(5)">⭐⭐⭐⭐⭐</button>
+      </div>
+      <textarea id="reviewComment" rows="3" placeholder="Share your experience with this seller..."></textarea>
+      <input type="hidden" id="reviewSellerId">
+      <button class="btn-primary" id="submitReviewBtn" style="width: 100%;">Submit Review</button>
+      <button class="btn-outline" onclick="closeModals()" style="width: 100%; margin-top: 0.5rem;">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div id="editProfileModal" class="modal">
+    <div class="modal-content">
+      <h2>Edit Profile</h2>
+      <input type="text" id="editName" placeholder="Full Name">
+      <input type="text" id="editCity" placeholder="City">
+      <input type="tel" id="editPhone" placeholder="Phone Number">
+      <div class="flex gap-3">
+        <button class="btn-primary" id="saveProfileBtn" style="flex: 1;">Save</button>
+        <button class="btn-outline" onclick="closeModals()" style="flex: 1;">Cancel</button>
       </div>
     </div>
   </div>
 
   <script>
-    // ==================== CONFIG ====================
     const SUPABASE_URL = 'https://vhdziqbrhwmjelextecs.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZHppcWJyaHdtamVsZXh0ZWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNTMyMTcsImV4cCI6MjA5MzgyOTIxN30.irxpciK3YgA8Kdze8e1adWgCJos99NRCgQxzWmkSEFc';
 
-    let supabaseClient, currentUser = null, currentGenre = 'all', currentSearch = '';
+    let supabaseClient;
+    let currentUser = null;
+    let currentGenre = 'all';
+    let currentSearch = '';
+    let currentRating = 0;
+    let currentReviewSellerId = null;
     let savedBooks = new Set();
+    
+    // Chat variables
     let currentConversationId = null;
+    let currentConversationOtherId = null;
+    let chatChannel = null;
 
     async function init() {
       supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       await checkSession();
-      setupListeners();
-      loadGenres();
+      setupEventListeners();
     }
 
     async function checkSession() {
       const { data: { session } } = await supabaseClient.auth.getSession();
-      currentUser = session?.user || null;
-
-      if (currentUser) {
+      
+      if (session) {
+        currentUser = session.user;
         document.getElementById('authButtons').classList.add('hidden');
         document.getElementById('userMenu').classList.remove('hidden');
-        document.getElementById('userName').innerHTML = `👤 ${currentUser.user_metadata?.full_name || currentUser.email}`;
+        document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.user_metadata?.full_name || session.user.email.split('@')[0]}`;
         document.getElementById('sellBtn').style.display = 'inline-flex';
+        document.getElementById('savedTab').classList.remove('hidden');
+        document.getElementById('myListingsTab').classList.remove('hidden');
+        document.getElementById('profileTab').classList.remove('hidden');
+        document.getElementById('chatsTab').classList.remove('hidden');
+        await loadSavedBooks();
+        await loadUserProfile();
+        await loadConversations();
+        subscribeToMessages();
       } else {
+        currentUser = null;
         document.getElementById('authButtons').classList.remove('hidden');
         document.getElementById('userMenu').classList.add('hidden');
         document.getElementById('sellBtn').style.display = 'none';
+        document.getElementById('savedTab').classList.add('hidden');
+        document.getElementById('myListingsTab').classList.add('hidden');
+        document.getElementById('profileTab').classList.add('hidden');
+        document.getElementById('chatsTab').classList.add('hidden');
+        if (chatChannel) chatChannel.unsubscribe();
+        document.getElementById('chatPanel').style.display = 'none';
       }
-      loadBooks();
+      await loadBooks();
+    }
+
+    async function subscribeToMessages() {
+      if (chatChannel) chatChannel.unsubscribe();
+      chatChannel = supabaseClient.channel('messages');
+      chatChannel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async (payload) => {
+        const msg = payload.new;
+        if (currentConversationId === msg.conversation_id) {
+          displayMessage(msg);
+        }
+        await loadConversations();
+      }).subscribe();
+    }
+
+    async function loadConversations() {
+      if (!currentUser) return;
+      const { data } = await supabaseClient.from('conversations')
+        .select('*, books(title)')
+        .or(`buyer_id.eq.${currentUser.id},seller_id.eq.${currentUser.id}`)
+        .order('last_message_time', { ascending: false });
+      
+      let unreadCount = 0;
+      const convos = await Promise.all((data || []).map(async c => {
+        const otherId = c.buyer_id === currentUser.id ? c.seller_id : c.buyer_id;
+        const { data: profile } = await supabaseClient.from('profiles').select('full_name').eq('id', otherId).single();
+        const { count: unread } = await supabaseClient.from('messages')
+          .select('id', { count: 'exact', head: true })
+          .eq('conversation_id', c.id)
+          .eq('is_read', false)
+          .neq('sender_id', currentUser.id);
+        if (unread) unreadCount += unread;
+        return { ...c, otherName: profile?.full_name || 'User', otherId, unreadCount: unread || 0 };
+      }));
+      
+      document.getElementById('conversationsList').innerHTML = convos.map(c => `
+        <div class="chat-conversation" onclick="openConversation(${c.id}, '${c.otherId}', ${c.book_id})">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>${escapeHtml(c.otherName)}</strong>
+            ${c.unreadCount > 0 ? `<span class="chat-badge" style="position:static;">${c.unreadCount}</span>` : ''}
+          </div>
+          <small>📖 ${escapeHtml(c.books?.title || 'Book')}</small>
+          <div class="text-sm text-gray-500">${c.last_message ? escapeHtml(c.last_message.substring(0, 50)) : 'No messages'}</div>
+        </div>
+      `).join('');
+      
+      document.getElementById('chatUnreadBadge').innerText = unreadCount;
+      document.getElementById('chatUnreadBadge').style.display = unreadCount > 0 ? 'inline-block' : 'none';
+    }
+
+    async function openConversation(conversationId, otherId, bookId) {
+      currentConversationId = conversationId;
+      currentConversationOtherId = otherId;
+      
+      await supabaseClient.from('messages').update({ is_read: true }).eq('conversation_id', conversationId).neq('sender_id', currentUser.id);
+      
+      const { data: msgs } = await supabaseClient.from('messages').select('*').eq('conversation_id', conversationId).order('created_at', { ascending: true });
+      document.getElementById('chatMessages').innerHTML = '';
+      msgs?.forEach(m => displayMessage(m));
+      document.getElementById('chatPanel').style.display = 'flex';
+      loadConversations();
+    }
+
+    async function startChat(bookId, sellerId, bookTitle, sellerName) {
+      if (!currentUser) { showLoginModal(); return; }
+      if (currentUser.id === sellerId) { alert("You can't chat with yourself"); return; }
+      
+      const { data: existing } = await supabaseClient.from('conversations')
+        .select('id').eq('book_id', bookId).eq('buyer_id', currentUser.id).eq('seller_id', sellerId).single();
+      
+      if (existing) {
+        openConversation(existing.id, sellerId, bookId);
+        return;
+      }
+      
+      const { data: newConv } = await supabaseClient.from('conversations').insert({
+        book_id: bookId, buyer_id: currentUser.id, seller_id: sellerId, last_message: `Interested in "${bookTitle}"`, last_message_time: new Date()
+      }).select().single();
+      
+      if (newConv) {
+        await supabaseClient.from('messages').insert({
+          conversation_id: newConv.id, sender_id: currentUser.id, message: `Hi! I'm interested in your book "${bookTitle}". Is it still available?`
+        });
+        openConversation(newConv.id, sellerId, bookId);
+      }
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      if (!message || !currentConversationId) return;
+      
+      const { error } = await supabaseClient.from('messages').insert({
+        conversation_id: currentConversationId, sender_id: currentUser.id, message
+      });
+      
+      if (!error) {
+        await supabaseClient.from('conversations').update({
+          last_message: message, last_message_time: new Date()
+        }).eq('id', currentConversationId);
+        input.value = '';
+      }
+    }
+
+    function displayMessage(msg) {
+      const isSent = msg.sender_id === currentUser.id;
+      const time = new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const messagesDiv = document.getElementById('chatMessages');
+      messagesDiv.innerHTML += `<div class="chat-message ${isSent ? 'sent' : 'received'}"><div class="message-bubble">${escapeHtml(msg.message)}</div><div class="message-time">${time}</div></div>`;
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    async function loadUserProfile() {
+      if (!currentUser) return;
+      const { data } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
+      if (data) {
+        document.getElementById('profileName').innerText = data.full_name || currentUser.email.split('@')[0];
+        document.getElementById('profileEmail').innerText = currentUser.email;
+        document.getElementById('profileCity').innerText = data.city || 'Not set';
+        document.getElementById('profilePhone').innerText = data.phone || 'Not set';
+        document.getElementById('userAvatar').innerText = (data.full_name || 'U')[0].toUpperCase();
+      }
+      const { data: ratingData } = await supabaseClient.from('seller_ratings').select('*').eq('seller_id', currentUser.id).single();
+      if (ratingData) {
+        document.getElementById('profileRating').innerText = ratingData.avg_rating || 0;
+        document.getElementById('profileReviewCount').innerText = ratingData.review_count || 0;
+      }
+    }
+
+    async function loadSavedBooks() {
+      if (!currentUser) return;
+      const { data } = await supabaseClient.from('saved_books').select('book_id').eq('user_id', currentUser.id);
+      savedBooks.clear();
+      data?.forEach(item => savedBooks.add(item.book_id));
+      document.getElementById('userSavedCount').innerText = savedBooks.size;
     }
 
     async function loadBooks() {
-      let q = supabaseClient.from('books').select('*').order('created_at', { ascending: false });
-
-      if (currentGenre !== 'all') q = q.eq('genre', currentGenre);
-      if (currentSearch) q = q.or(`title.ilike.%${currentSearch}%,author.ilike.%${currentSearch}%`);
-
-      const { data } = await q;
-      
-      const grid = document.getElementById('booksGrid');
-      if (!data?.length) {
-        grid.innerHTML = `<p style="grid-column:1/-1;text-align:center;padding:3rem;">No books found.</p>`;
+      let query = supabaseClient.from('books').select('*').order('created_at', { ascending: false });
+      if (currentGenre !== 'all') query = query.eq('genre', currentGenre);
+      if (currentSearch) query = query.or(`title.ilike.%${currentSearch}%,author.ilike.%${currentSearch}%,seller_name.ilike.%${currentSearch}%`);
+      const locationFilter = document.getElementById('locationFilter')?.value;
+      if (locationFilter) query = query.ilike('location', `%${locationFilter}%`);
+      const statusFilter = document.getElementById('statusFilter')?.value;
+      if (statusFilter === 'available') query = query.eq('status', 'available');
+      const { data, error } = await query;
+      if (error) { console.error(error); return; }
+      if (!data || data.length === 0) {
+        document.getElementById('booksGrid').innerHTML = '<div class="text-center" style="grid-column:1/-1;padding:3rem;"><p>No books found.</p></div>';
+        document.getElementById('bookCount').innerText = '0';
         return;
       }
-
-      grid.innerHTML = data.map(book => {
-        const images = book.image_urls ? book.image_urls.split(',').map(u=>u.trim()) : [];
-        const img = images[0] || '';
+      const sellerIds = [...new Set(data.map(b => b.seller_id))];
+      const { data: ratings } = await supabaseClient.from('seller_ratings').select('*').in('seller_id', sellerIds);
+      const ratingMap = new Map();
+      ratings?.forEach(r => ratingMap.set(r.seller_id, { avg: r.avg_rating, count: r.review_count }));
+      
+      document.getElementById('booksGrid').innerHTML = data.map(book => {
+        const rating = ratingMap.get(book.seller_id);
+        const isSaved = savedBooks.has(book.id);
         return `
           <div class="book-card">
             <div class="book-cover">
-              ${img ? `<img src="${img}" onerror="this.outerHTML='<i class=\\'fas fa-book-open\\'></i>'">` : '<i class="fas fa-book-open"></i>'}
+              ${book.image_url ? `<img src="${book.image_url}" onerror="this.innerHTML='<i class=\'fas fa-book-open\'></i>'">` : '<i class="fas fa-book-open"></i>'}
             </div>
-            <div style="padding:1rem;">
-              <h3>${escapeHtml(book.title)}</h3>
-              <p>by ${escapeHtml(book.author)}</p>
-              <p><strong>₹${book.price}</strong> • ${book.genre}</p>
-              ${book.location ? `<p>📍 ${escapeHtml(book.location)}</p>` : ''}
-              ${currentUser && book.seller_id !== currentUser.id ? `
-                <button onclick="startChat(${book.id},'${book.seller_id}','${escapeHtml(book.title)}')" class="btn-chat" style="margin-top:8px;width:100%;">💬 Chat with Seller</button>
-              ` : ''}
+            <div class="book-info">
+              <h3 class="book-title">${escapeHtml(book.title)}</h3>
+              <p class="book-author">by ${escapeHtml(book.author)}</p>
+              <div>
+                <span class="book-genre">${book.genre}</span>
+                <span class="book-price">₹${book.price}</span>
+                ${book.location ? `<span class="book-location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(book.location)}</span>` : ''}
+              </div>
+              <div class="rating-stars">
+                ${rating ? `⭐ ${rating.avg} (${rating.count} reviews)` : '⭐ No reviews yet'}
+              </div>
+              <p class="book-condition">📖 ${escapeHtml(book.condition || 'Good condition')}</p>
+              <div class="seller-name">
+                <span><i class="fas fa-user"></i> ${escapeHtml(book.seller_name)}</span>
+                ${currentUser && book.seller_id !== currentUser.id ? `<button onclick="showReviewModal('${book.seller_id}', '${escapeHtml(book.seller_name)}', '${escapeHtml(book.title)}')" class="btn-outline" style="padding:0.25rem 0.5rem; font-size:0.75rem;">⭐ Rate</button>` : ''}
+              </div>
+              <div class="action-buttons">
+                ${currentUser && book.seller_id !== currentUser.id && book.status !== 'sold' ? `
+                  <button onclick="startChat(${book.id}, '${book.seller_id}', '${escapeHtml(book.title)}', '${escapeHtml(book.seller_name)}')" class="btn-chat" style="flex:1;"><i class="fas fa-comment"></i> Chat</button>
+                  <a href="https://wa.me/91${book.seller_phone}?text=Hi! I'm interested in \"${book.title}\" for ₹${book.price}" target="_blank" class="btn-green" style="flex:1; text-decoration:none; text-align:center;">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                  </a>
+                  <button onclick="makeOffer('${book.seller_phone}', '${escapeHtml(book.title)}', ${book.price})" class="btn-outline" style="flex:0.5;">💬 Offer</button>
+                ` : ''}
+                ${currentUser && book.seller_id !== currentUser.id ? `
+                  <button onclick="toggleSave(${book.id})" class="btn-save" style="flex:0.5;">${isSaved ? '❤️' : '🤍'}</button>
+                ` : ''}
+              </div>
             </div>
           </div>
         `;
       }).join('');
+      document.getElementById('bookCount').innerText = data.length;
+      document.getElementById('sellerCount').innerText = new Set(data.map(b => b.seller_id)).size;
     }
 
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
+    async function loadSaved() {
+      if (!currentUser) return;
+      const { data } = await supabaseClient.from('saved_books').select('book_id').eq('user_id', currentUser.id);
+      if (!data?.length) { document.getElementById('savedGrid').innerHTML = '<div class="text-center"><p>No saved books.</p></div>'; return; }
+      const { data: books } = await supabaseClient.from('books').select('*').in('id', data.map(d => d.book_id));
+      document.getElementById('savedGrid').innerHTML = books.map(book => `
+        <div class="book-card">
+          <div class="book-cover">${book.image_url ? `<img src="${book.image_url}">` : '<i class="fas fa-book-open"></i>'}</div>
+          <div class="book-info">
+            <h3>${escapeHtml(book.title)}</h3>
+            <p>by ${escapeHtml(book.author)}</p>
+            <p><strong>₹${book.price}</strong></p>
+            <button onclick="toggleSave(${book.id})" class="btn-red">Remove</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function loadMyListings() {
+      if (!currentUser) return;
+      const { data } = await supabaseClient.from('books').select('*').eq('seller_id', currentUser.id).order('created_at', { ascending: false });
+      document.getElementById('myListingsGrid').innerHTML = data?.map(book => `
+        <div class="book-card">
+          <div class="book-cover">${book.image_url ? `<img src="${book.image_url}">` : '<i class="fas fa-book-open"></i>'}</div>
+          <div class="book-info">
+            <h3>${escapeHtml(book.title)}</h3>
+            <p>by ${escapeHtml(book.author)}</p>
+            <p><strong>₹${book.price}</strong> ${book.location ? `📍 ${book.location}` : ''}</p>
+            <p>Status: ${book.status === 'sold' ? 'SOLD' : 'Available'}</p>
+            <div class="flex gap-2" style="margin-top:0.75rem;">
+              ${book.status !== 'sold' ? `<button onclick="markAsSold(${book.id})" class="btn-green">✓ Mark Sold</button>` : ''}
+              <button onclick="deleteBook(${book.id})" class="btn-red">🗑 Delete</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('userBookCount').innerText = data?.length || 0;
+    }
+
+    async function toggleSave(bookId) {
+      if (!currentUser) { showLoginModal(); return; }
+      if (savedBooks.has(bookId)) {
+        await supabaseClient.from('saved_books').delete().eq('book_id', bookId).eq('user_id', currentUser.id);
+        savedBooks.delete(bookId);
+        alert('Removed');
+      } else {
+        await supabaseClient.from('saved_books').insert({ book_id: bookId, user_id: currentUser.id });
+        savedBooks.add(bookId);
+        alert('Saved!');
+      }
+      document.getElementById('userSavedCount').innerText = savedBooks.size;
+      await loadBooks();
     }
 
     async function publishBook() {
-      if (!currentUser) return alert("Please login first");
-
-      const book = {
-        title: document.getElementById('bookTitle').value.trim(),
-        author: document.getElementById('bookAuthor').value.trim(),
-        genre: document.getElementById('bookGenre').value,
-        price: parseInt(document.getElementById('bookPrice').value),
-        location: document.getElementById('bookLocation').value.trim(),
-        seller_phone: document.getElementById('sellerPhone').value.trim(),
-        condition: document.getElementById('bookCondition').value.trim(),
-        image_urls: document.getElementById('photoUrls').value.trim(),
-        seller_id: currentUser.id,
-        seller_name: currentUser.user_metadata?.full_name || currentUser.email.split('@')[0],
-        status: 'available'
-      };
-
-      if (!book.title || !book.author || !book.price || !book.seller_phone) {
-        return alert("Please fill all required fields");
-      }
-
-      const { error } = await supabaseClient.from('books').insert([book]);
-      if (error) alert(error.message);
-      else {
-        alert("✅ Book published successfully!");
-        closeModals();
-        loadBooks();
-      }
+      const title = document.getElementById('bookTitle').value, author = document.getElementById('bookAuthor').value, genre = document.getElementById('bookGenre').value, price = parseInt(document.getElementById('bookPrice').value), location = document.getElementById('bookLocation').value, sellerPhone = document.getElementById('sellerPhone').value, condition = document.getElementById('bookCondition').value, imageUrl = document.getElementById('bookImageUrl').value;
+      if (!title || !author || !price || !sellerPhone) { alert('Fill required fields'); return; }
+      const { error } = await supabaseClient.from('books').insert([{ title, author, genre, price, location, condition: condition || 'Good', image_url: imageUrl || null, seller_name: currentUser.user_metadata?.full_name || currentUser.email.split('@')[0], seller_id: currentUser.id, seller_phone: sellerPhone, status: 'available' }]);
+      if (error) alert('Error: ' + error.message);
+      else { closeModals(); alert('✅ Book listed!'); loadBooks(); }
     }
 
-    function setupListeners() {
-      document.getElementById('sellBtn').onclick = () => document.getElementById('sellModal').classList.add('show');
+    async function markAsSold(id) { await supabaseClient.from('books').update({ status: 'sold' }).eq('id', id); alert('✅ Marked as sold'); loadMyListings(); loadBooks(); }
+    async function deleteBook(id) { if (confirm('Delete?')) { await supabaseClient.from('books').delete().eq('id', id); loadMyListings(); loadBooks(); } }
+    async function submitReview() { await supabaseClient.from('reviews').insert({ seller_id: currentReviewSellerId, reviewer_id: currentUser.id, rating: currentRating, comment: document.getElementById('reviewComment').value }); alert('✅ Review submitted!'); closeModals(); loadBooks(); }
+    function setRating(r) { currentRating = r; alert(`⭐ ${r} stars selected`); }
+    function showReviewModal(sellerId, sellerName, bookTitle) { currentReviewSellerId = sellerId; document.getElementById('reviewSellerName').innerText = sellerName; document.getElementById('reviewModal').classList.add('show'); }
+    function makeOffer(phone, title, price) { const offer = prompt(`Make offer for "${title}" (₹${price}):`); if (offer) window.open(`https://wa.me/91${phone}?text=I'd like to offer ₹${offer} for "${title}"`, '_blank'); }
+    async function login() { const { error } = await supabaseClient.auth.signInWithPassword({ email: document.getElementById('loginEmail').value, password: document.getElementById('loginPassword').value }); if (error) alert(error.message); else { closeModals(); checkSession(); alert('✅ Logged in!'); } }
+    async function signup() { const { error } = await supabaseClient.auth.signUp({ email: document.getElementById('signupEmail').value, password: document.getElementById('signupPassword').value, options: { data: { full_name: document.getElementById('signupName').value, city: document.getElementById('signupCity').value, phone: document.getElementById('signupPhone').value } } }); if (error) alert(error.message); else { alert('✅ Account created! Check email.'); closeModals(); } }
+    async function logout() { await supabaseClient.auth.signOut(); await checkSession(); alert('Logged out'); }
+    async function updateProfile() { await supabaseClient.from('profiles').upsert({ id: currentUser.id, full_name: document.getElementById('editName').value, city: document.getElementById('editCity').value, phone: document.getElementById('editPhone').value }); alert('✅ Profile updated'); closeModals(); loadUserProfile(); }
+
+    function showLoginModal() { closeModals(); document.getElementById('loginModal').classList.add('show'); }
+    function showSignupModal() { closeModals(); document.getElementById('signupModal').classList.add('show'); }
+    function showSellModal() { if (!currentUser) { showLoginModal(); return; } closeModals(); document.getElementById('sellModal').classList.add('show'); }
+    function showSaved() { switchTab('saved'); loadSaved(); }
+    function showMyListings() { switchTab('mylistings'); loadMyListings(); }
+    function showProfile() { switchTab('profile'); loadUserProfile(); loadMyListings(); }
+    function showChats() { switchTab('chats'); loadConversations(); }
+    function showEditProfile() { document.getElementById('editProfileModal').classList.add('show'); }
+    function closeModals() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('show')); document.getElementById('chatPanel').style.display = 'none'; currentConversationId = null; }
+    
+    function switchTab(tab) {
+      document.getElementById('browseSection').classList.add('hidden');
+      document.getElementById('savedSection').classList.add('hidden');
+      document.getElementById('myListingsSection').classList.add('hidden');
+      document.getElementById('profileSection').classList.add('hidden');
+      document.getElementById('chatsSection').classList.add('hidden');
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      
+      if (tab === 'browse') { document.getElementById('browseSection').classList.remove('hidden'); document.getElementById('browseTab').classList.add('active'); loadBooks(); }
+      else if (tab === 'saved') { document.getElementById('savedSection').classList.remove('hidden'); document.getElementById('savedTab').classList.add('active'); loadSaved(); }
+      else if (tab === 'mylistings') { document.getElementById('myListingsSection').classList.remove('hidden'); document.getElementById('myListingsTab').classList.add('active'); loadMyListings(); }
+      else if (tab === 'profile') { document.getElementById('profileSection').classList.remove('hidden'); document.getElementById('profileTab').classList.add('active'); loadUserProfile(); loadMyListings(); }
+      else if (tab === 'chats') { document.getElementById('chatsSection').classList.remove('hidden'); document.getElementById('chatsTab').classList.add('active'); loadConversations(); }
+    }
+
+    function setupEventListeners() {
+      document.getElementById('showLoginBtn').onclick = showLoginModal;
+      document.getElementById('showSignupBtn').onclick = showSignupModal;
+      document.getElementById('logoutBtn').onclick = logout;
+      document.getElementById('showSavedBtn').onclick = showSaved;
+      document.getElementById('showMyListingsBtn').onclick = showMyListings;
+      document.getElementById('showProfileBtn').onclick = showProfile;
+      document.getElementById('showChatsBtn').onclick = showChats;
+      document.getElementById('sellBtn').onclick = showSellModal;
+      document.getElementById('loginBtn').onclick = login;
+      document.getElementById('signupBtn').onclick = signup;
       document.getElementById('publishBtn').onclick = publishBook;
-      document.getElementById('showLoginBtn').onclick = () => alert("Login modal can be added");
-      document.getElementById('logoutBtn').onclick = () => supabaseClient.auth.signOut().then(() => location.reload());
-      document.getElementById('searchInput').addEventListener('input', e => { currentSearch = e.target.value; loadBooks(); });
+      document.getElementById('saveProfileBtn').onclick = updateProfile;
+      document.getElementById('editProfileBtn').onclick = showEditProfile;
+      document.getElementById('submitReviewBtn').onclick = submitReview;
+      document.getElementById('sendChatBtn').onclick = sendMessage;
+      document.getElementById('closeChatBtn').onclick = () => { document.getElementById('chatPanel').style.display = 'none'; currentConversationId = null; };
+      document.getElementById('chatInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+      document.getElementById('browseTab').onclick = () => switchTab('browse');
+      document.getElementById('savedTab').onclick = () => switchTab('saved');
+      document.getElementById('myListingsTab').onclick = () => switchTab('mylistings');
+      document.getElementById('profileTab').onclick = () => switchTab('profile');
+      document.getElementById('chatsTab').onclick = () => switchTab('chats');
+      document.querySelectorAll('.genre-btn').forEach(btn => btn.addEventListener('click', function() { document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active')); this.classList.add('active'); currentGenre = this.dataset.genre; loadBooks(); }));
+      document.getElementById('searchInput').addEventListener('input', (e) => { currentSearch = e.target.value; loadBooks(); });
+      document.getElementById('locationFilter').addEventListener('input', () => loadBooks());
+      document.getElementById('statusFilter').addEventListener('change', () => loadBooks());
+      window.onclick = (e) => { if (e.target.classList && e.target.classList.contains('modal')) closeModals(); };
     }
 
-    function loadGenres() {
-      const genres = ['All','Fiction','Classic','Mystery','Sci-Fi','Romance','Self-Help'];
-      document.getElementById('genreContainer').innerHTML = genres.map(g => 
-        `<button class="genre-btn ${g==='All'?'active':''}" data-genre="${g.toLowerCase()}" onclick="filterGenre(this)">${g}</button>`
-      ).join('');
-    }
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
 
-    window.filterGenre = function(btn) {
-      document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentGenre = btn.dataset.genre;
-      loadBooks();
-    };
-
-    window.startChat = function(bookId, sellerId, title) {
-      if (!currentUser) return alert("Please login to chat");
-      alert(`Chat started with seller for "${title}"\n(Full chat feature can be expanded)`);
-    };
-
-    function closeModals() {
-      document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
-    }
-
+    // Make functions global for onclick
+    window.startChat = startChat;
+    window.openConversation = openConversation;
+    window.toggleSave = toggleSave;
+    window.markAsSold = markAsSold;
+    window.deleteBook = deleteBook;
+    window.showReviewModal = showReviewModal;
+    window.setRating = setRating;
+    window.makeOffer = makeOffer;
+    window.showLoginModal = showLoginModal;
+    window.showSignupModal = showSignupModal;
+    window.showSellModal = showSellModal;
     window.closeModals = closeModals;
+
     init();
   </script>
 </body>
